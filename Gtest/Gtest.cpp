@@ -12,54 +12,7 @@
 #include "ITA.h"
 using namespace std;
 
-//int i = 1;
-//int j = 0;
-//SGP_HANDLE handle = 0;
-//static void GetFocusResult(int result, void* pUser)
-//{
-//
-//    cout << "第" << i << "次聚焦" << endl;
-//
-//    //printf("时间%s 调焦结果是%d\n", dt::currentSystemTimeStr().c_str(),result);
-//    printf("Focus result is %d\n", result);
-//
-//    if (result == 1)
-//    {        
-//        i++;
-//        SGP_FOCUS_TYPE type = SGP_FOCUS_AUTO;
-//        int value = 0;
-//        int ret = SGP_SetFocus(handle, type, value);
-//        if (ret == SGP_OK)
-//        {
-//            cout << "调焦成功" << endl;
-//        }
-//        else
-//        {
-//            cout << "调焦失败" << endl;
-//        }      
-//    }
-//
-//
-//    else if (result == -1)
-//    {
-//        cout << "打快门,重新聚焦" << endl;
-//        Sleep(2000);
-//        SGP_FOCUS_TYPE type = SGP_FOCUS_AUTO;
-//        int value = 0;
-//        int ret = SGP_SetFocus(handle, type, value);
-//        j += 1;
-//    }
-//
-//    else
-//    {
-//        cout << "聚焦失败，重新聚焦" << endl;
-//        SGP_FOCUS_TYPE type = SGP_FOCUS_AUTO;
-//        int value = 0;
-//        int ret = SGP_SetFocus(handle, type, value);
-//    }
-//    cout << "遇到打快门次数为：" << j<<endl;
-//    cout << endl;
-//}
+
 static void TempCall(short* temp, int w, int h, void* pUser)
 {
     cout << *temp << endl;
@@ -78,7 +31,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.152";
+    const char* server = "192.168.21.153";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -87,8 +40,7 @@ int main()
     {
         cout << "登录成功" << endl;
 
-
-        SGP_VERSION_INFO info;
+       /* SGP_VERSION_INFO info;
         memset(&info, 0x00, sizeof(info));
         int ret = SGP_GetVersionInfo(handle, &info);
         if (ret == SGP_OK)
@@ -126,7 +78,19 @@ int main()
         else
         {
             cout << "返回失败\n" << "ret的返回值为：" << ret << endl;
-        }
+        }*/
+
+        
+
+
+
+
+
+
+
+
+
+
 
 
 
