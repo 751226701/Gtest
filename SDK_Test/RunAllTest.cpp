@@ -9,11 +9,11 @@ public:
 
     static void SetUpTestCase()
     {
-        printf("before all test\n");
+        cout << "Before all test" << endl;
     }
     static void TearDownTestCase()
     {
-        printf("end after all test\n");
+        cout << "End after all test" << endl;
     }
 
     void SetUp() override
