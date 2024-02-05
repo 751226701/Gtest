@@ -134,7 +134,7 @@ static void GetIrRtsp(unsigned char* outdata, int w, int h, void* pUser)
 static void GetY16Data(short* y16, int length, void* ptr)
 { 
     getTempMatrix(y16);
-    callbackCounts();
+    //callbackCounts();
 }
 void getTempMatrix(short* y16)
 {
@@ -157,25 +157,29 @@ void getTempMatrix(short* y16)
         return;
     }
 
-    float max = matrix[0], min = matrix[0], avg = 0, sum = 0;
-    for (int i = 0; i < 640 * 512; i++)
+    else
     {
-        if (matrix[i] >= max)
+        callbackCounts();
+        float max = matrix[0], min = matrix[0], avg = 0, sum = 0;
+        for (int i = 0; i < 640 * 512; i++)
         {
-            max = matrix[i];
+            if (matrix[i] >= max)
+            {
+                max = matrix[i];
+            }
+
+            if (min >= matrix[i])
+            {
+                min = matrix[i];
+            }
+            sum += matrix[i];
         }
 
-        if (min >= matrix[i])
-        {
-            min = matrix[i];
-        }
-        sum += matrix[i];
+       /* tee << getTime() << "  "
+            << "maxTemp:" << fixed << setprecision(2) << max << "  "
+            << "minTemp:" << fixed << setprecision(2) << min << "  "
+            << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;*/
     }
-
-    tee << getTime() << "  "
-        << "maxTemp:" << fixed << setprecision(2) << max << "  "
-        << "minTemp:" << fixed << setprecision(2) << min << "  "
-        << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;
 
     if (matrix)
     {
@@ -210,7 +214,7 @@ int main()
     tee << endl;
     tee << "Please enter the testing time:";
     cin >> n;*/
-    const char* server = "192.168.21.153";
+    const char* server = "192.168.21.4";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;

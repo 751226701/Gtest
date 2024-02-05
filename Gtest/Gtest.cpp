@@ -31,7 +31,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.153";
+    const char* server = "192.168.21.4";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -40,7 +40,7 @@ int main()
     {
         cout << "登录成功" << endl;
 
-       /* SGP_VERSION_INFO info;
+        /*SGP_VERSION_INFO info;
         memset(&info, 0x00, sizeof(info));
         int ret = SGP_GetVersionInfo(handle, &info);
         if (ret == SGP_OK)
@@ -79,9 +79,6 @@ int main()
         {
             cout << "返回失败\n" << "ret的返回值为：" << ret << endl;
         }*/
-
-        
-
 
 
 
