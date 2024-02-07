@@ -9,18 +9,18 @@ public:
 
     static void SetUpTestCase()
     {
-        cout << "Before all test" << endl;
+        cout << "Start Test" << endl;
     }
     static void TearDownTestCase()
     {
-        cout << "End after all test" << endl;
+        cout << "Test over" << endl;
     }
 
     void SetUp() override
     {
         handle = SGP_InitDevice();
         ASSERT_NE(handle, 0) << "SGP_InitDevice failed!" << endl;
-        const char* server = "192.168.21.153";
+        const char* server = "192.168.21.4";
         const char* username = "root";
         const char* password = "guide123";
         int port = 80;

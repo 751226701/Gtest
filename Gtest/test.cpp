@@ -175,10 +175,10 @@ void getTempMatrix(short* y16)
             sum += matrix[i];
         }
 
-       /* tee << getTime() << "  "
+        tee << getTime() << "  "
             << "maxTemp:" << fixed << setprecision(2) << max << "  "
             << "minTemp:" << fixed << setprecision(2) << min << "  "
-            << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;*/
+            << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;
     }
 
     if (matrix)
