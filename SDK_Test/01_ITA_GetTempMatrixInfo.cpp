@@ -92,7 +92,7 @@ TEST_F(GetTempMatrixInfo, 05_PATHE_NONE)
 	int width = WIDTH;
 	int height = HEIGHT;
 	ITA_RESULT result;
-	char file[] = "D:/APP/VS2022/project/Gtest/Gtest/testPictures/test.jpg";
+	char file[] = DLT_PICTUERE_PATH;
 	ITA_HEATMAP_TYPE heatMapType = ITA_DLT;
 	ITA_TEMPMATRIX_INFO MatrixInfo;
 	MatrixInfo.tempMatrix = new float[width * height];

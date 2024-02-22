@@ -31,7 +31,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.4";
+    const char* server = "192.168.23.145";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -80,7 +80,26 @@ int main()
             cout << "返回失败\n" << "ret的返回值为：" << ret << endl;
         }*/
 
-
+        
+        SGP_VERSION_INFO info;
+        memset(&info, 0x00, sizeof(info));
+        int ret = SGP_GetVersionInfo(handle, &info);
+        if (ret == SGP_OK)
+        {
+            cout << "返回成功，获取的系统信息为：" << endl;
+            cout << "设备型号：" << info.model << endl;
+            cout << "系统版本：" << info.version << endl;
+            cout << "序列号：  " << info.serial << endl;
+            cout << "FPGA版本：" << info.fpga_version << endl;
+            cout << "测温版本：" << info.measure_version << endl;
+            cout << "SDK版本： " << info.sdk_version << endl;
+        }
+        else
+        {
+            cout << "返回失败\n" << "ret的返回值为：" << ret << endl;
+        }
+        
+        
 
 
 
