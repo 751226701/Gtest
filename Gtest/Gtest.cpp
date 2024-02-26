@@ -31,7 +31,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.23.145";
+    const char* server = "192.168.21.232";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
