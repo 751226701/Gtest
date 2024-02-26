@@ -30,7 +30,7 @@
     <ClCompile Include="热图解析.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="注册非法访问回调函数.cpp">
+    <ClCompile Include="回调函数检查.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="注册温度告警回调函数.cpp">
