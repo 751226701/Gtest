@@ -139,7 +139,8 @@ int main()
         cout << "测温版本：" << info.measure_version << endl;
         cout << "SDK版本： " << info.sdk_version << endl;
 
-        int standTemp = 230;
+        float standTemp = 230;
+        float k = 30;
         int counts = 0;
         
         while (1) {
@@ -159,13 +160,13 @@ int main()
                     {
                         for (int i = 0; i < pointNum; i++)
                         {
-                            int dif = std::abs(temp[i] - standTemp);
-                            if (dif > 30) 
+                            float dif = std::abs(temp[i] - standTemp);
+                            if (dif > k) 
                             {
                                 counts++;
                             }
-                            tee << getTime() << "  " << fixed << setprecision(1) << temp[i] << "   异常温度次数"
-                                << counts << "   比较标准：" << standTemp <<"   差值：" << dif << endl;
+                            tee << fixed << setprecision(1) << "实时温度：" << temp[i] << "   比较标准：" << standTemp
+                                << "   差值：" << dif << "   误差范围："<< k << "   异常温度次数" << counts << endl;
                         }
                     }
                     else
