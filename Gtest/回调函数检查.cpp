@@ -5,6 +5,18 @@
 #include  "SgpParam.h"
 using namespace std;
 
+static void GetIrRtsp(unsigned char* outdata, int w, int h, void* pUser)
+{
+    //printf("outdata is %s\n", outdata);
+    printf("w is %d, h is %d\n", w, h);
+    cout << pUser << endl;
+    Sleep(2000);
+}
+static void GetRecordStatus(int state, void* pUser)
+{
+    //printf("Current record status is %d\n", state);
+    //Sleep(2000);
+}
 static void GetAccessNotify(SGP_ACCESSVIOLATIONNOTIFY notify, void* pUser)
 {
     printf("异常登录用户名是%s\n", notify.user);
@@ -70,6 +82,21 @@ int main()
     if (ret1 == SGP_OK)
     {
         cout << "登陆成功！" << endl;
+
+        //视频回调
+        for (int i = 1; i <= 1; i++)
+        {
+            int result = SGP_OpenIrVideo(handle, GetIrRtsp, 0);
+            printf("第%d次SGP_OpenIrVideo接口返回值是%d\n", i, result);
+            Sleep(5000);
+            std::string IRFile = "1234.mp4";
+            int startResult = SGP_StartRecord(handle, SGP_IR_VIDEO, IRFile.c_str(), GetRecordStatus, 0);
+            printf("SGP_StartRecord接口红外返回值是%d\n", startResult);
+            Sleep(30000);
+            SGP_StopRecord(handle, SGP_IR_VIDEO);
+            //关闭视频流
+            SGP_CloseIrVideo(handle);
+        }
 
         //非法访问回调
         SGP_RegisterAccessViolationCallback(handle, GetAccessNotify, 0);
