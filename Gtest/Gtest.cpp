@@ -2,6 +2,7 @@
 
 int main()
 {
+    std::ostream& log = initTee("C:\\Users\\gd09186\\Desktop\\test11.log");
     SGP_HANDLE handle = 0;
     handle = SGP_InitDevice(); 
     
@@ -24,7 +25,7 @@ int main()
         
         
         
-        testPointTemp(handle);
+        
         
 
         

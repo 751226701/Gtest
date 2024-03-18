@@ -68,6 +68,13 @@ std::ofstream logFile("C:\\Users\\gd09186\\Desktop\\test.log", std::ios::app);  
 CoutTeeBuffer teeBuffer(std::cout.rdbuf(), logFile.rdbuf());
 std::ostream tee(&teeBuffer);
 
+//创建日志记录器
+std::ostream& initTee(const std::string& logFilePath) {
+    static std::ofstream logFile(logFilePath, std::ios::app); 
+    static CoutTeeBuffer teeBuffer(std::cout.rdbuf(), logFile.rdbuf());
+    static std::ostream tee(&teeBuffer);
+    return tee;
+}
 //设置测温点坐标点
 int setPoint(int x, int y) {
     return x + y * 640;
@@ -157,7 +164,7 @@ void GetVersionInfo(SGP_HANDLE handle) {
     SGP_VERSION_INFO info1;
     memset(&info1, 0x00, sizeof(info1));
     SGP_GetVersionInfo(handle, &info1);
-    cout << "返回成功，获取的系统信息为：" << endl;
+    cout << "获取的系统信息为：" << endl;
     cout << "设备型号：" << info1.model << endl;
     cout << "系统版本：" << info1.version << endl;
     cout << "序列号：  " << info1.serial << endl;
