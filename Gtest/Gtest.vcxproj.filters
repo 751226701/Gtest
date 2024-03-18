@@ -59,5 +59,8 @@
     <ClInclude Include="Y16Decode.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="COMMON.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

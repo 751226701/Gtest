@@ -404,6 +404,10 @@ static void GetRecordStatus(int state, void* pUser)
             info.show_mode = 7;   //温度显示类型
             info.show_string = 5; //字符串显示位置
             info.opti_trans = 0.2;//光学透过率
+            info.isot_high = 20;
+            info.isot_low = 20;
+            strcpy(info.isot_high_color, "#00ff00");
+            strcpy(info.isot_low_color, "#00ff00");
             ret = SGP_SetThermometryParam(handle, info);
             if (ret == SGP_OK)
             {
@@ -526,7 +530,7 @@ static void GetRecordStatus(int state, void* pUser)
         memset(&rulePoint, 0x00, sizeof(SGP_RULE));
         rulePoint.alarm_condition = 1;
         rulePoint.alarm_flag = 1;
-        rulePoint.alarm_time = 30;
+        rulePoint.alarm_time = 10;
         rulePoint.alarm_type = 1;
         rulePoint.alarm_interal = 30;
         rulePoint.avg_temp = 30;

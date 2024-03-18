@@ -20,7 +20,7 @@ public:
     {
         handle = SGP_InitDevice();
         ASSERT_NE(handle, 0) << "SGP_InitDevice failed!" << endl;
-        const char* server = "192.168.21.232";
+        const char* server = "192.168.21.143";
         const char* username = "root";
         const char* password = "guide123";
         int port = 80;
@@ -122,8 +122,8 @@ TEST_F(SgpTest, 004_GetPointTemp)
     ASSERT_EQ(ret, SGP_OK) << "SGP_GetPointTemp failed xy" << endl;
     cout <<  "获取的第一个点温度为：" << output << endl;
 
-    int x1 = 640;
-    int y1 = 512;
+    int x1 = 250;
+    int y1 = 250;
     float output1 = 0.0f;
     int ret1 = SGP_GetPointTemp(handle, x1, y1, &output);
     ASSERT_EQ(ret1, SGP_OK) << "SGP_GetPointTemp failed x1y1" << endl << endl;
@@ -722,7 +722,7 @@ TEST_F(SgpTest, 062_AddThermometryRule_Point)
     memset(&rulePoint, 0x00, sizeof(SGP_RULE));
     rulePoint.alarm_condition = 1;
     rulePoint.alarm_flag = 1;
-    rulePoint.alarm_time = 30;
+    rulePoint.alarm_time = 10;
     rulePoint.alarm_type = 1;
     rulePoint.alarm_interal = 30;
     rulePoint.avg_temp = 30;
@@ -755,7 +755,7 @@ TEST_F(SgpTest, 063_AddThermometryRule_Line)
     memset(&rulePoint, 0x00, sizeof(SGP_RULE));
     rulePoint.alarm_condition = 1;
     rulePoint.alarm_flag = 1;
-    rulePoint.alarm_time = 30;
+    rulePoint.alarm_time = 10;
     rulePoint.alarm_type = 1;
     rulePoint.alarm_interal = 30;
     rulePoint.avg_temp = 30;
@@ -790,7 +790,7 @@ TEST_F(SgpTest, 064_AddThermometryRule_Rectangle)
     memset(&rulePoint, 0x00, sizeof(SGP_RULE));
     rulePoint.alarm_condition = 1;
     rulePoint.alarm_flag = 1;
-    rulePoint.alarm_time = 30;
+    rulePoint.alarm_time = 10;
     rulePoint.alarm_type = 1;
     rulePoint.alarm_interal = 30;
     rulePoint.avg_temp = 30;
@@ -829,7 +829,7 @@ TEST_F(SgpTest, 065_AddThermometryRule_Circle)
     memset(&rulePoint, 0x00, sizeof(SGP_RULE));
     rulePoint.alarm_condition = 1;
     rulePoint.alarm_flag = 1;
-    rulePoint.alarm_time = 30;
+    rulePoint.alarm_time = 10;
     rulePoint.alarm_type = 1;
     rulePoint.alarm_interal = 30;
     rulePoint.avg_temp = 30;
@@ -838,14 +838,14 @@ TEST_F(SgpTest, 065_AddThermometryRule_Circle)
     rulePoint.low_temp = 28;
     rulePoint.show_type = 1;
     rulePoint.points_num = 4; //点个数是1
-    rulePoint.points[0].x = 428;
-    rulePoint.points[0].y = 308;
-    rulePoint.points[1].x = 478;
-    rulePoint.points[1].y = 254;
-    rulePoint.points[2].x = 529;
-    rulePoint.points[2].y = 308;
-    rulePoint.points[3].x = 478;
-    rulePoint.points[3].y = 362;
+    rulePoint.points[0].x = 88;
+    rulePoint.points[0].y = 100;
+    rulePoint.points[1].x = 144;
+    rulePoint.points[1].y = 68;
+    rulePoint.points[2].x = 200;
+    rulePoint.points[2].y = 100;
+    rulePoint.points[3].x = 144;
+    rulePoint.points[3].y = 133;
     strcpy(rulePoint.rule_name, "Circle");
     rulePoint.show_location = 1;
     rulePoint.temp_mod = 1;
@@ -868,7 +868,7 @@ TEST_F(SgpTest, 066_AddThermometryRule_Polygon)
     memset(&rulePoint, 0x00, sizeof(SGP_RULE));
     rulePoint.alarm_condition = 1;
     rulePoint.alarm_flag = 1;
-    rulePoint.alarm_time = 30;
+    rulePoint.alarm_time = 10;
     rulePoint.alarm_type = 1;
     rulePoint.alarm_interal = 30;
     rulePoint.avg_temp = 30;
@@ -877,20 +877,20 @@ TEST_F(SgpTest, 066_AddThermometryRule_Polygon)
     rulePoint.low_temp = 28;
     rulePoint.show_type = 1;
     rulePoint.points_num = 6; //点个数是1
-    rulePoint.points[0].x = 107;
-    rulePoint.points[0].y = 330;
-    rulePoint.points[1].x = 186;
-    rulePoint.points[1].y = 329;
-    rulePoint.points[2].x = 190;
-    rulePoint.points[2].y = 378;
-    rulePoint.points[3].x = 194;
-    rulePoint.points[3].y = 429;
-    rulePoint.points[4].x = 131;
-    rulePoint.points[4].y = 433;
-    rulePoint.points[5].x = 62;
-    rulePoint.points[5].y = 428;
-    rulePoint.points[6].x = 127;
-    rulePoint.points[6].y = 382;
+    rulePoint.points[0].x = 95;
+    rulePoint.points[0].y = 166;
+    rulePoint.points[1].x = 153;
+    rulePoint.points[1].y = 159;
+    rulePoint.points[2].x = 164;
+    rulePoint.points[2].y = 180;
+    rulePoint.points[3].x = 167;
+    rulePoint.points[3].y = 227;
+    rulePoint.points[4].x = 145;
+    rulePoint.points[4].y = 248;
+    rulePoint.points[5].x = 99;
+    rulePoint.points[5].y = 244;
+    rulePoint.points[6].x = 72;
+    rulePoint.points[6].y = 216;
     strcpy(rulePoint.rule_name, "Polygon");
     rulePoint.show_location = 1;
     rulePoint.temp_mod = 1;
@@ -1692,7 +1692,7 @@ TEST_F(SgpTest, 126_RebootSystem)
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
-    //::testing::GTEST_FLAG(filter) = "SgpTest.106_GetVersionInfo";
+    //::testing::GTEST_FLAG(filter) = "SgpTest.065_AddThermometryRule_Circle";
     return RUN_ALL_TESTS();
 }
 

@@ -48,11 +48,23 @@ static void GetTempNotify(SGP_TEMPALARMNOTIFY notify, void* pUser)
     if (notify.temp_flag == 1) { cout << "报警类型：高温报警！" << endl; }
     if (notify.temp_flag == 2) { cout << "报警类型：低温报警！" << endl; }
     if (notify.temp_flag == 3) { cout << "报警类型：高低温报警！" << endl; }
+    if (notify.temp_flag == 5) { cout << "报警类型：温升报警！" << endl; }
+    if (notify.temp_flag == 6) { cout << "报警类型：温差报警！" << endl; }
     if (notify.type == 1) { cout << "温度报警！" << endl; }
     if (notify.type == 2) { cout << "热点报警！" << endl; }
     if (notify.type == 3) { cout << "冷点报警！" << endl; }
     cout << notify.name << endl;
     cout << endl;
+    notify.config.type = 3;
+    notify.config.condition = 1;
+    notify.config.avg_temp = 33;
+    notify.config.high_temp = 33;
+    notify.config.low_temp = 33;
+    notify.config.objtype = 2;
+    notify.config.points[0].x = 1;
+    notify.config.points[0].y = 1;
+    notify.config.points[1].x = 100;
+    notify.config.points[1].y = 100;
 }
 static void GetFocusResult(int result, void* pUser)
 {
@@ -73,7 +85,7 @@ int main()
         cout << "初始化失败" << endl;
     }*/
 
-    const char* server = "192.168.21.232";
+    const char* server = "192.168.21.143";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
