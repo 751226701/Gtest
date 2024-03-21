@@ -56,8 +56,8 @@ TEST_F(Y16Set,1)
 	ConvertShortToUnsignedChar1(y16MaxtrixInfo.y16Matrix, srcData, height * width);
 	result = ITA_ISP(handle, srcData, srcSize, &resultinfo);
 	ASSERT_EQ(result, ITA_OK) << "ITA_ISP fail" << endl;
-	
 	cout << "图像处理成功！" << endl;
+
 	ITAHeatMapOutput outputinfo;
 	inputinfo.tempMatrix = MatrixInfo.tempMatrix;
 	inputinfo.rgb = resultinfo.imgDst;

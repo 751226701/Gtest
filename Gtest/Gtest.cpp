@@ -2,7 +2,7 @@
 
 int main()
 {
-    std::ostream& log = initTee("C:\\Users\\gd09186\\Desktop\\test11.log");
+    std::ostream& log = initTee("C:\\Users\\gd09186\\Desktop\\test.log");
     SGP_HANDLE handle = 0;
     handle = SGP_InitDevice(); 
     
@@ -12,7 +12,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.232";
+    const char* server = "192.168.21.4";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -30,7 +30,7 @@ int main()
 
         
 
-       
+        
 
 
 

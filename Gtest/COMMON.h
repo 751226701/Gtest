@@ -1,11 +1,15 @@
 #pragma once
 #include <iostream>
 #include <stdlib.h>
-#include <string>
 #include <windows.h>
-#include <chrono>
+#include <string>
+#include <thread>
 #include <iomanip>
+#include <time.h>
+#include <iostream>
 #include <fstream>
+#include <chrono>
+#include <ctime>
 #include "SgpApi.h"
 #include "SgpParam.h"
 #include "ITAHeatmap.h"

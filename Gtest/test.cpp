@@ -27,6 +27,20 @@ string getTime()
     strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&timep));
     return tmp;
 }
+void saveY16(string filename,short *y16) {
+    ofstream file(filename, ios::out | ios::binary);
+    if (file.is_open()) {
+        for (int i = 0; i < 640 * 512; i++)
+        {
+            file << y16[i] << " ";
+        }
+        file.close();
+    }
+    else
+    {
+        cout << "文件打开失败" << endl;
+    }
+}
 class TeeStream {
 public:
     TeeStream(std::ostream& stream1, std::ostream& stream2) : stream1(stream1), stream2(stream2) {}
@@ -99,7 +113,7 @@ public:
     std::streambuf* buffer2;
     bool atLineStart = true;
 };
-std::ofstream logFile("test.log", std::ios::app);  // 打开文件时使用追加模式
+std::ofstream logFile("test.log", std::ios::app);  
 CoutTeeBuffer teeBuffer(std::cout.rdbuf(), logFile.rdbuf());
 std::ostream tee(&teeBuffer);
 void callbackCounts()
@@ -142,11 +156,11 @@ void getTempMatrix(short* y16)
     {
         return;
     }
-
+    
     float* matrix = (float*)malloc(640 * 512 * sizeof(float));
     int ret = SGP_GetTempMatrixEx(handle, matrix, y16, 640, 512);
 
-    if (ret == 1)
+    if (ret != 0)
     {
         cout << "转温度矩阵异常！！！！" << endl;
         if (matrix)
@@ -198,7 +212,6 @@ void Test();
 int main()
 { 
     handle = SGP_InitDevice();
-    
     if (handle != 0)
     {
         cout << "初始化成功" << endl;
@@ -214,7 +227,7 @@ int main()
     tee << endl;
     tee << "Please enter the testing time:";
     cin >> n;*/
-    const char* server = "192.168.21.232";
+    const char* server = "192.168.21.4";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;

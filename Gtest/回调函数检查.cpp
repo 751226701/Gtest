@@ -55,17 +55,19 @@ static void GetTempNotify(SGP_TEMPALARMNOTIFY notify, void* pUser)
     if (notify.type == 3) { cout << "冷点报警！" << endl; }
     cout << notify.name << endl;
     cout << endl;
-    notify.config.type = 3;
-    notify.config.condition = 1;
-    notify.config.avg_temp = 33;
-    notify.config.high_temp = 33;
-    notify.config.low_temp = 33;
-    notify.config.objtype = 2;
-    notify.config.points[0].x = 1;
-    notify.config.points[0].y = 1;
-    notify.config.points[1].x = 100;
-    notify.config.points[1].y = 100;
+   
+    cout << notify.config.type << endl;
+    cout << notify.config.condition << endl;
+    cout << notify.config.high_temp << endl;
+    cout << notify.config.low_temp << endl;
+    cout << notify.config.avg_temp << endl;
+    cout << notify.config.objtype << endl;
+    for (int i = 0; i < sizeof(notify.config.points) / sizeof(notify.config.points[0]); i++) {
+        cout << notify.config.points[i].x << endl;
+        cout << notify.config.points[i].y << endl;
+    }
 }
+
 static void GetFocusResult(int result, void* pUser)
 {
     printf("Focus result is %d\n", result);
@@ -96,19 +98,19 @@ int main()
         cout << "登陆成功！" << endl;
 
         //视频回调
-        for (int i = 1; i <= 1; i++)
-        {
-            int result = SGP_OpenIrVideo(handle, GetIrRtsp, 0);
-            printf("第%d次SGP_OpenIrVideo接口返回值是%d\n", i, result);
-            Sleep(5000);
-            std::string IRFile = "1234.mp4";
-            int startResult = SGP_StartRecord(handle, SGP_IR_VIDEO, IRFile.c_str(), GetRecordStatus, 0);
-            printf("SGP_StartRecord接口红外返回值是%d\n", startResult);
-            Sleep(30000);
-            SGP_StopRecord(handle, SGP_IR_VIDEO);
-            //关闭视频流
-            SGP_CloseIrVideo(handle);
-        }
+        //for (int i = 1; i <= 1; i++)
+        //{
+        //    int result = SGP_OpenIrVideo(handle, GetIrRtsp, 0);
+        //    printf("第%d次SGP_OpenIrVideo接口返回值是%d\n", i, result);
+        //    Sleep(5000);
+        //    std::string IRFile = "1234.mp4";
+        //    int startResult = SGP_StartRecord(handle, SGP_IR_VIDEO, IRFile.c_str(), GetRecordStatus, 0);
+        //    printf("SGP_StartRecord接口红外返回值是%d\n", startResult);
+        //    Sleep(30000);
+        //    SGP_StopRecord(handle, SGP_IR_VIDEO);
+        //    //关闭视频流
+        //    SGP_CloseIrVideo(handle);
+        //}
 
         //非法访问回调
         SGP_RegisterAccessViolationCallback(handle, GetAccessNotify, 0);
