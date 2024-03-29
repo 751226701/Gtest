@@ -12,7 +12,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.4";
+    const char* server = "192.168.21.244";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -22,8 +22,25 @@ int main()
         cout << "登录成功" << endl;
         GetVersionInfo(handle);
         
-        
-        
+        std::chrono::steady_clock::time_point last_success_time;
+
+        while (true)
+        {
+            const char* path = "./testPicture/screenpic.jpg";
+            int ret = SGP_GetHeatMap(handle, path);
+            if (ret == SGP_OK)
+            {
+                auto current_time = std::chrono::steady_clock::now();
+                std::cout << getTime() << " 获取热图成功" << std::endl;
+                std::cout << "距离上一次成功获取热图的时间间隔为：" << getTimeInterval(last_success_time, current_time) << std::endl;
+                last_success_time = current_time; 
+            }
+            else
+            {
+                std::cout << "返回失败\n" << "ret的返回值为：" << ret << std::endl;
+            }
+        }
+
         
         
         

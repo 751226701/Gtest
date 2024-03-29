@@ -10,6 +10,9 @@
 #include <fstream>
 #include <chrono>
 #include <ctime>
+#include <string>
+#include <sstream>
+#include <mutex>
 #include "SgpApi.h"
 #include "SgpParam.h"
 #include "ITAHeatmap.h"
@@ -24,6 +27,26 @@ string getTime()
     char tmp[64];
     strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&timep));
     return tmp;
+}
+std::string getTimeEx()
+{
+    auto now = std::chrono::system_clock::now();
+    auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
+    auto epoch = now_ms.time_since_epoch();
+    std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(epoch);
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    std::tm* now_tm = std::localtime(&now_c);
+
+    std::ostringstream oss;
+    oss << std::put_time(now_tm, "%Y-%m-%d %H:%M:%S");
+    oss << '.' << std::setfill('0') << std::setw(3) << epoch.count() % 1000;
+
+    return oss.str();
+}
+std::string getTimeInterval(const std::chrono::steady_clock::time_point& start, const std::chrono::steady_clock::time_point& end)
+{
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    return std::to_string(elapsed.count()) + "毫秒";
 }
 static void TempCall(short* temp, int w, int h, void* pUser)
 {
@@ -71,6 +94,66 @@ public:
 std::ofstream logFile("C:\\Users\\gd09186\\Desktop\\test.log", std::ios::app);  // 打开文件时使用追加模式
 CoutTeeBuffer teeBuffer(std::cout.rdbuf(), logFile.rdbuf());
 std::ostream tee(&teeBuffer);
+
+class Logger {
+public:
+    // 构造函数，设置日志文件路径
+    explicit Logger(const std::string& path)
+        : file_path_(path), stream_(nullptr) {
+        openFile();
+    }
+
+    // 析构函数，关闭日志文件
+    ~Logger() {
+        if (stream_ != nullptr) {
+            stream_->close();
+            delete stream_;
+        }
+    }
+
+    // 添加日志消息，支持输出到控制台和文件，并添加时间戳
+    void log(const std::string& message) {
+        std::lock_guard<std::mutex> lock(mutex_);
+
+        // 获取当前时间
+        auto now = std::chrono::system_clock::now();
+        std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+        std::tm now_tm = *std::localtime(&now_c);
+
+        // 创建日志行
+        std::ostringstream log_line;
+        log_line << std::put_time(&now_tm, "[%Y-%m-%d %X]") << "  " << message;
+
+        // 输出到控制台
+        std::cout << log_line.str() << std::endl;
+
+        // 写入文件
+        if (stream_ != nullptr) {
+            *stream_ << log_line.str() << std::endl;
+        }
+    }
+
+    // 打开或重新打开日志文件
+    void openFile() {
+        if (stream_ != nullptr) {
+            stream_->close();
+            delete stream_;
+            stream_ = nullptr;
+        }
+
+        // 以追加模式打开日志文件
+        stream_ = new std::ofstream(file_path_, std::ios::app);
+        if (!stream_->is_open()) {
+            std::cerr << "Failed to open log file: " << file_path_ << std::endl;
+        }
+    }
+
+private:
+    std::string file_path_;
+    std::ofstream* stream_;
+    std::mutex mutex_;
+};
+
 
 //创建日志记录器
 std::ostream& initTee(const std::string& logFilePath) {
