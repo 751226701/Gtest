@@ -9,10 +9,12 @@
 #include <fstream>
 #include <chrono>
 #include <ctime>
+#include <opencv2/opencv.hpp>
 #include "SgpApi.h"
 #include "SgpParam.h"
 #include "stdio.h"
 using namespace std;
+using namespace cv;
 
 static int callbackCount = 0; 
 static auto lastSecond = chrono::system_clock::now();
@@ -150,57 +152,86 @@ static void GetY16Data(short* y16, int length, void* ptr)
     getTempMatrix(y16);
     //callbackCounts();
 }
-void getTempMatrix(short* y16)
-{
-    if (!y16)
+
+void matrixToVideo(float* matrix) {
+
+    /*COLORMAP_AUTUMN: «Ôºæ…´≤ ”≥…‰°£
+    COLORMAP_BONE : π«˜¿…´≤ ”≥…‰°£
+    COLORMAP_COOL : ¿‰…´≤ ”≥…‰°£
+    COLORMAP_HOT : »»…´≤ ”≥…‰°£
+    COLORMAP_HSV : HSV …´≤ ”≥…‰°£
+    COLORMAP_JET : ≥£”√µƒ≤ ∫Á…´≤ ”≥…‰°£
+    COLORMAP_OCEAN : ∫£—Û…´≤ ”≥…‰°£
+    COLORMAP_PINK : ∑€…´…´≤ ”≥…‰°£
+    COLORMAP_RAINBOW : ≤ ∫Á…´≤ ”≥…‰°£
+    COLORMAP_SPRING : ¥∫ºæ…´≤ ”≥…‰°£
+    COLORMAP_SUMMER : œƒºæ…´≤ ”≥…‰°£
+    COLORMAP_WINTER : ∂¨ºæ…´≤ ”≥…‰°£*/
+    
+    Mat temperatureImage(512, 640, CV_32F, matrix);
+    normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
+    Mat normalized8U;
+    temperatureImage.convertTo(normalized8U, CV_8U, 255.0);
+
+    try {
+        
+        Mat coloredImage;
+        applyColorMap(normalized8U, coloredImage, COLORMAP_JET);
+
+        imshow("Temperature Image", coloredImage);
+        waitKey(1);
+    }
+    catch (Exception& e) {
+        cerr << "Exception caught: " << e.what() << endl;
+    }
+
+    free(matrix);
+    matrix = nullptr;
+}
+void getMaxMinTemp(float* matrix) {
+    float max = matrix[0], min = matrix[0], avg = 0, sum = 0;
+    for (int i = 0; i < 640 * 512; i++)
     {
+        if (matrix[i] >= max)
+        {
+            max = matrix[i];
+        }
+
+        if (min >= matrix[i])
+        {
+            min = matrix[i];
+        }
+        sum += matrix[i];
+    }
+
+    tee << getTime() << "  "
+        << "maxTemp:" << fixed << setprecision(2) << max << "  "
+        << "minTemp:" << fixed << setprecision(2) << min << "  "
+        << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;
+}
+void getTempMatrix(short* y16) {
+    if (!y16) {
         return;
     }
-    
+
     float* matrix = (float*)malloc(640 * 512 * sizeof(float));
     int ret = SGP_GetTempMatrixEx(handle, matrix, y16, 640, 512);
 
-    if (ret != 0)
-    {
+    if (ret != 0) {
         cout << "◊™Œ¬∂»æÿ’Û“Ï≥££°£°£°£°" << endl;
-        if (matrix)
-        {
+        if (matrix) {
             free(matrix);
             matrix = nullptr;
         }
         return;
     }
 
-    else
-    {
-        callbackCounts();
-        float max = matrix[0], min = matrix[0], avg = 0, sum = 0;
-        for (int i = 0; i < 640 * 512; i++)
-        {
-            if (matrix[i] >= max)
-            {
-                max = matrix[i];
-            }
-
-            if (min >= matrix[i])
-            {
-                min = matrix[i];
-            }
-            sum += matrix[i];
-        }
-
-        tee << getTime() << "  "
-            << "maxTemp:" << fixed << setprecision(2) << max << "  "
-            << "minTemp:" << fixed << setprecision(2) << min << "  "
-            << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;
-    }
-
-    if (matrix)
-    {
-        free(matrix);
-        matrix = nullptr;
-    }
+    matrixToVideo(matrix);
+    callbackCounts();
+    //getMaxMinTemp(matrix);
+   
 }
+
 void threadFunction()
 {
     SGP_OpenIrVideo(handle, GetIrRtsp, 0);
