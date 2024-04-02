@@ -152,10 +152,10 @@ static void GetY16Data(short* y16, int length, void* ptr)
     getTempMatrix(y16);
     //callbackCounts();
 }
-
 void matrixToVideo(float* matrix) {
 
-    /*COLORMAP_AUTUMN: 秋季色彩映射。
+    /*
+    COLORMAP_AUTUMN: 秋季色彩映射。
     COLORMAP_BONE : 骨骼色彩映射。
     COLORMAP_COOL : 冷色彩映射。
     COLORMAP_HOT : 热色彩映射。
