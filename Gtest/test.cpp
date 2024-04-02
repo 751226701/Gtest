@@ -152,6 +152,9 @@ static void GetY16Data(short* y16, int length, void* ptr)
     getTempMatrix(y16);
     //callbackCounts();
 }
+void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
+    image.convertTo(image, -1, brightness, contrast);
+}
 void matrixToVideo(float* matrix) {
 
     /*
@@ -179,10 +182,15 @@ void matrixToVideo(float* matrix) {
     try {
         //将灰度图映射到对应的伪彩方案上
         Mat coloredImage;
-        applyColorMap(normalized8U, coloredImage, COLORMAP_JET);
+        applyColorMap(normalized8U, coloredImage, COLORMAP_WINTER);
+
+        double brightness = 1;  //亮度范围0-3
+        int contrast = 50;  //对比度范围-100-100
+        adjustBrightnessContrast(coloredImage, brightness, contrast);
+
         //显示图像
         imshow("Temperature Image", coloredImage);
-        waitKey(0);
+        waitKey(1);
     }
     catch (Exception& e) {
         cerr << "Exception caught: " << e.what() << endl;
@@ -230,7 +238,7 @@ void getTempMatrix(short* y16) {
     }
 
     matrixToVideo(matrix);
-    callbackCounts();
+    //callbackCounts();
     //getMaxMinTemp(matrix);
    
 }
