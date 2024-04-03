@@ -311,28 +311,20 @@ void matrixToVideo(float* matrix) {
 }
 //Y16矩阵成像
 void y16ToVideo(short* y16) {
-    Mat temperatureImage(512, 640, CV_32F);
-    for (int i = 0; i < 512 * 640; ++i) {
-        temperatureImage.at<float>(i) = static_cast<float>(y16[i]);
-    }
-
-    // 数据归一，将温度映射到0-1范围内，转为灰度图
-    normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
-    // 将 CV_32F 数据转化为 8 位图像数据
-    Mat normalized8U;
-    temperatureImage.convertTo(normalized8U, CV_8U, 255.0);
+    Mat temperatureImage(512, 640, CV_16S, y16);
+    normalize(temperatureImage, temperatureImage, 0, 255, NORM_MINMAX);
+    Mat temperature8U;
+    temperatureImage.convertTo(temperature8U, CV_8U);
 
     try {
-        // 将灰度图映射到对应的伪彩方案上
         Mat coloredImage;
-        applyColorMap(normalized8U, coloredImage, COLORMAP_WINTER);
+        applyColorMap(temperature8U, coloredImage, COLORMAP_WINTER);
 
         double brightness = 1;  // 亮度范围0-3
         int contrast = 50;      // 对比度范围-100-100
         adjustBrightnessContrast(coloredImage, brightness, contrast);
 
-        // 显示图像
-        imshow("Y16_Video", coloredImage);
+        imshow("Temperature Image", coloredImage);
         waitKey(1);
     }
     catch (Exception& e) {
