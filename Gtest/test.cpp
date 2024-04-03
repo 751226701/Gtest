@@ -294,7 +294,20 @@ int main()
         myThread.join();
        
         
-       
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         int retl = SGP_Logout(handle);
         if (retl == SGP_OK)
