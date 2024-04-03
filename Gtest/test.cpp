@@ -152,6 +152,13 @@ static void GetY16Data(short* y16, int length, void* ptr)
     getTempMatrix(y16);
     //callbackCounts();
 }
+static void onMouse(int event, int x, int y, int flags, void* userdata) {
+    if (event == EVENT_MOUSEMOVE) {
+        Mat* temperatureImage = (Mat*)userdata;
+        float temperature = temperatureImage->at<float>(y, x);
+        cout << "mouse position (" << x << ", " << y << ")"<< endl;
+    }
+}
 //调整亮度对比度
 void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
     image.convertTo(image, -1, brightness, contrast);
@@ -178,6 +185,7 @@ void matrixToVideo(float* matrix) {
 
         //显示图像
         imshow("matrix_Video", coloredImage);
+        setMouseCallback("matrix_Video", onMouse, (void*)&temperatureImage);
         waitKey(1);
     }
     catch (Exception& e) {
@@ -200,6 +208,7 @@ void y16ToVideo(short* y16) {
         adjustBrightnessContrast(coloredImage, brightness, contrast);
 
         imshow("Y16_Video", coloredImage);
+        setMouseCallback("Y16_Video", onMouse, (void*)&temperatureImage);
         waitKey(1);
     }
     catch (Exception& e) {
