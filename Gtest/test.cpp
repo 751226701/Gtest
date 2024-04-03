@@ -158,20 +158,6 @@ void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
 }
 //温度矩阵成像
 void matrixToVideo(float* matrix) {
-
-    /*
-    COLORMAP_AUTUMN: 秋季色彩映射。
-    COLORMAP_BONE : 骨骼色彩映射。
-    COLORMAP_COOL : 冷色彩映射。
-    COLORMAP_HOT : 热色彩映射。
-    COLORMAP_HSV : HSV 色彩映射。
-    COLORMAP_JET : 常用的彩虹色彩映射。
-    COLORMAP_OCEAN : 海洋色彩映射。
-    COLORMAP_PINK : 粉色色彩映射。
-    COLORMAP_RAINBOW : 彩虹色彩映射。
-    COLORMAP_SPRING : 春季色彩映射。
-    COLORMAP_SUMMER : 夏季色彩映射。
-    COLORMAP_WINTER : 冬季色彩映射。*/
     
     //将温度矩阵转化为CV_32F数据类型存储
     Mat temperatureImage(512, 640, CV_32F, matrix);
@@ -184,7 +170,7 @@ void matrixToVideo(float* matrix) {
     try {
         //将灰度图映射到对应的伪彩方案上
         Mat coloredImage;
-        applyColorMap(normalized8U, coloredImage, COLORMAP_BONE);
+        applyColorMap(normalized8U, coloredImage, COLORMAP_PARULA);
 
         double brightness = 1;  //亮度范围0-3
         int contrast = 50;  //对比度范围-100-100
