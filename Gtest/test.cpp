@@ -152,9 +152,11 @@ static void GetY16Data(short* y16, int length, void* ptr)
     getTempMatrix(y16);
     //callbackCounts();
 }
+//调整亮度对比度
 void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
     image.convertTo(image, -1, brightness, contrast);
 }
+//温度矩阵成像
 void matrixToVideo(float* matrix) {
 
     /*
@@ -195,10 +197,38 @@ void matrixToVideo(float* matrix) {
     catch (Exception& e) {
         cerr << "Exception caught: " << e.what() << endl;
     }
-
-    free(matrix);
-    matrix = nullptr;
 }
+//Y16矩阵成像
+void y16ToVideo(short* y16) {
+    Mat temperatureImage(512, 640, CV_32F);
+    for (int i = 0; i < 512 * 640; ++i) {
+        temperatureImage.at<float>(i) = static_cast<float>(y16[i]);
+    }
+
+    // 数据归一，将温度映射到0-1范围内，转为灰度图
+    normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
+    // 将 CV_32F 数据转化为 8 位图像数据
+    Mat normalized8U;
+    temperatureImage.convertTo(normalized8U, CV_8U, 255.0);
+
+    try {
+        // 将灰度图映射到对应的伪彩方案上
+        Mat coloredImage;
+        applyColorMap(normalized8U, coloredImage, COLORMAP_WINTER);
+
+        double brightness = 1;  // 亮度范围0-3
+        int contrast = 50;      // 对比度范围-100-100
+        adjustBrightnessContrast(coloredImage, brightness, contrast);
+
+        // 显示图像
+        imshow("Y16_Video", coloredImage);
+        waitKey(1);
+    }
+    catch (Exception& e) {
+        cerr << "Exception caught: " << e.what() << endl;
+    }
+}
+//获取温度矩阵最高温最低温
 void getMaxMinTemp(float* matrix) {
     float max = matrix[0], min = matrix[0], avg = 0, sum = 0;
     for (int i = 0; i < 640 * 512; i++)
@@ -237,10 +267,13 @@ void getTempMatrix(short* y16) {
         return;
     }
 
+    //y16ToVideo(y16);
     matrixToVideo(matrix);
     //callbackCounts();
     //getMaxMinTemp(matrix);
-   
+
+    free(matrix);
+    matrix = nullptr;
 }
 
 void threadFunction()

@@ -13,12 +13,14 @@
 #include <string>
 #include <sstream>
 #include <mutex>
+#include <opencv2/opencv.hpp>
 #include "SgpApi.h"
 #include "SgpParam.h"
 #include "ITAHeatmap.h"
 #include "ERROR.h"
 #include "ITA.h"
 using namespace std;
+using namespace cv;
 
 string getTime()
 {
@@ -260,4 +262,80 @@ void GetVersionInfo(SGP_HANDLE handle) {
     cout << "SDK版本： " << info1.sdk_version << endl;
     cout << "****************************************" << endl;
     cout << endl;
+}
+//调整亮度对比度
+void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
+    image.convertTo(image, -1, brightness, contrast);
+}
+//温度矩阵成像
+void matrixToVideo(float* matrix) {
+
+    /*
+    COLORMAP_AUTUMN: 秋季色彩映射。
+    COLORMAP_BONE : 骨骼色彩映射。
+    COLORMAP_COOL : 冷色彩映射。
+    COLORMAP_HOT : 热色彩映射。
+    COLORMAP_HSV : HSV 色彩映射。
+    COLORMAP_JET : 常用的彩虹色彩映射。
+    COLORMAP_OCEAN : 海洋色彩映射。
+    COLORMAP_PINK : 粉色色彩映射。
+    COLORMAP_RAINBOW : 彩虹色彩映射。
+    COLORMAP_SPRING : 春季色彩映射。
+    COLORMAP_SUMMER : 夏季色彩映射。
+    COLORMAP_WINTER : 冬季色彩映射。*/
+
+    //将温度矩阵转化为CV_32F数据类型存储
+    Mat temperatureImage(512, 640, CV_32F, matrix);
+    //数据归一，将温度映射到0-1范围内,转为灰度图
+    normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
+    //将CV_32F数据转化为8位图像数据
+    Mat normalized8U;
+    temperatureImage.convertTo(normalized8U, CV_8U, 255.0);
+
+    try {
+        //将灰度图映射到对应的伪彩方案上
+        Mat coloredImage;
+        applyColorMap(normalized8U, coloredImage, COLORMAP_WINTER);
+
+        double brightness = 1;  //亮度范围0-3
+        int contrast = 50;  //对比度范围-100-100
+        adjustBrightnessContrast(coloredImage, brightness, contrast);
+
+        //显示图像
+        imshow("Temperature Image", coloredImage);
+        waitKey(1);
+    }
+    catch (Exception& e) {
+        cerr << "Exception caught: " << e.what() << endl;
+    }
+}
+//Y16矩阵成像
+void y16ToVideo(short* y16) {
+    Mat temperatureImage(512, 640, CV_32F);
+    for (int i = 0; i < 512 * 640; ++i) {
+        temperatureImage.at<float>(i) = static_cast<float>(y16[i]);
+    }
+
+    // 数据归一，将温度映射到0-1范围内，转为灰度图
+    normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
+    // 将 CV_32F 数据转化为 8 位图像数据
+    Mat normalized8U;
+    temperatureImage.convertTo(normalized8U, CV_8U, 255.0);
+
+    try {
+        // 将灰度图映射到对应的伪彩方案上
+        Mat coloredImage;
+        applyColorMap(normalized8U, coloredImage, COLORMAP_WINTER);
+
+        double brightness = 1;  // 亮度范围0-3
+        int contrast = 50;      // 对比度范围-100-100
+        adjustBrightnessContrast(coloredImage, brightness, contrast);
+
+        // 显示图像
+        imshow("Y16_Video", coloredImage);
+        waitKey(1);
+    }
+    catch (Exception& e) {
+        cerr << "Exception caught: " << e.what() << endl;
+    }
 }
