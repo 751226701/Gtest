@@ -228,6 +228,7 @@ void getMaxMinTemp(float* matrix) {
         << "minTemp:" << fixed << setprecision(2) << min << "  "
         << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;
 }
+//Y16×ªÎÂ¶È¾ØÕó
 void getTempMatrix(short* y16) {
     if (!y16) {
         return;
