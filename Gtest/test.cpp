@@ -184,14 +184,14 @@ void matrixToVideo(float* matrix) {
     try {
         //将灰度图映射到对应的伪彩方案上
         Mat coloredImage;
-        applyColorMap(normalized8U, coloredImage, COLORMAP_WINTER);
+        applyColorMap(normalized8U, coloredImage, COLORMAP_BONE);
 
         double brightness = 1;  //亮度范围0-3
         int contrast = 50;  //对比度范围-100-100
         adjustBrightnessContrast(coloredImage, brightness, contrast);
 
         //显示图像
-        imshow("Temperature Image", coloredImage);
+        imshow("matrix_Video", coloredImage);
         waitKey(1);
     }
     catch (Exception& e) {
@@ -214,7 +214,7 @@ void y16ToVideo(short* y16) {
     try {
         // 将灰度图映射到对应的伪彩方案上
         Mat coloredImage;
-        applyColorMap(normalized8U, coloredImage, COLORMAP_WINTER);
+        applyColorMap(normalized8U, coloredImage, COLORMAP_BONE);
 
         double brightness = 1;  // 亮度范围0-3
         int contrast = 50;      // 对比度范围-100-100
