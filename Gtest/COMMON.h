@@ -339,3 +339,120 @@ void y16ToVideo(short* y16) {
         cerr << "Exception caught: " << e.what() << endl;
     }
 }
+//拷机测试
+void StressTest(int n, SGP_HANDLE handle) {
+    int j = 1;
+    int errCount = 0;
+    while (j <= 360 * n)
+    {
+        tee << "第" << j << "轮" << endl;
+        Sleep(2000);
+        SGP_IMAGE_TYPE type = SGP_IR_IMAGE;
+        char path[] = "./screencap.jpg";
+        int retc = SGP_GetScreenCapture(handle, type, path);
+        if (retc == SGP_OK)
+        {
+            tee << "获取屏幕截图成功" << endl;
+        }
+        else
+        {
+            tee << "获取屏幕截图失败\n" << "ret的返回值为：" << retc << endl;
+            errCount += 1;
+        }
+        tee << endl;
+
+        Sleep(1000);
+        const char* paths = "screenpic.jpg";
+        int retg = SGP_GetHeatMap(handle, paths);
+        if (retg == SGP_OK)
+        {
+            tee << "获取热图成功" << endl;
+        }
+        else
+        {
+            tee << "获取热图失败\n" << "ret的返回值为：" << retg << endl;
+            errCount += 1;
+        }
+        tee << endl;
+
+        Sleep(2000);
+        SGP_FOCUS_TYPE types = SGP_FOCUS_AUTO;
+        int value = 750;
+        int retj = SGP_SetFocus(handle, types, value);
+        if (retj == SGP_OK)
+        {
+            tee << "聚焦成功" << endl;
+        }
+        else
+        {
+            tee << "聚焦失败\n" << "ret的返回值为：" << retj << endl;
+            errCount += 1;
+        }
+        tee << endl;
+
+        Sleep(3000);
+        SGP_SHUTTER_ENUM typek = SGP_SHUTTER;
+        int retk = SGP_DoShutter(handle, typek);
+        if (retk == SGP_OK)
+        {
+            tee << "打快门成功！" << endl;
+        }
+        else
+        {
+            tee << "打快门失败\n" << "ret的返回值为：" << retk << endl;
+            errCount += 1;
+        }
+
+        Sleep(2000);
+        tee << endl;
+        SGP_GENERAL_INFO info;
+        memset(&info, 0x00, sizeof(info));
+        int rett = SGP_GetGeneralInfo(handle, &info);
+        if (rett == SGP_OK)
+        {
+            int height = info.ir_model_h;
+            int width = info.ir_model_w;
+            int length = height * width;
+            int type = 1;
+            float* output = (float*)calloc(length, sizeof(float));
+            if (output != NULL)
+            {
+                rett = SGP_GetImageTemps(handle, output, length * 4, type);
+                if (rett == SGP_OK)
+                {
+                    tee << "获取温度矩阵成功" << endl;
+                }
+                else
+                {
+                    tee << "获取温度矩阵失败" << "rett=" << rett << endl;
+                    errCount += 1;
+                }
+                float max = 0, min = 100, sum = 0;
+                for (int i = 0; i < length; i++)
+                {
+                    if (max < output[i])
+                    {
+                        max = output[i];
+                    }
+                    if (min > output[i])
+                    {
+                        min = output[i];
+                    }
+                    sum += output[i];
+                }
+
+                tee << "获取的最高温为：" << setprecision(3) << max << endl;
+                tee << "获取的最低温为：" << setprecision(3) << min << endl;
+                tee << "获取的平均温为：" << setprecision(3) << sum / length << endl;
+            }
+            free(output);
+            output = NULL;
+        }
+
+        tee << endl;
+        tee << "接口调用失败次数：" << errCount << endl;
+        tee << endl; tee << endl;
+
+        j++;
+    }
+}
