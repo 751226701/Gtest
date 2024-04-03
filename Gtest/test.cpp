@@ -199,7 +199,7 @@ void y16ToVideo(short* y16) {
         int contrast = 50;      // �Աȶȷ�Χ-100-100
         adjustBrightnessContrast(coloredImage, brightness, contrast);
 
-        imshow("Temperature Image", coloredImage);
+        imshow("Y16_Video", coloredImage);
         waitKey(1);
     }
     catch (Exception& e) {
