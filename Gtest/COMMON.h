@@ -166,7 +166,7 @@ std::ostream& initTee(const std::string& logFilePath) {
 }
 //设置测温点坐标点
 int setPoint(int x, int y) {
-    return x + y * 640;
+    return x + y * 640 - 1;
 }
 //测试指定点的温度
 void testPointTemp(SGP_HANDLE handle)
@@ -262,74 +262,6 @@ void GetVersionInfo(SGP_HANDLE handle) {
     cout << "SDK版本： " << info1.sdk_version << endl;
     cout << "****************************************" << endl;
     cout << endl;
-}
-//调整亮度对比度
-void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
-    image.convertTo(image, -1, brightness, contrast);
-}
-//温度矩阵成像
-void matrixToVideo(float* matrix) {
-
-    /*
-    COLORMAP_AUTUMN: 秋季色彩映射。
-    COLORMAP_BONE : 骨骼色彩映射。
-    COLORMAP_COOL : 冷色彩映射。
-    COLORMAP_HOT : 热色彩映射。
-    COLORMAP_HSV : HSV 色彩映射。
-    COLORMAP_JET : 常用的彩虹色彩映射。
-    COLORMAP_OCEAN : 海洋色彩映射。
-    COLORMAP_PINK : 粉色色彩映射。
-    COLORMAP_RAINBOW : 彩虹色彩映射。
-    COLORMAP_SPRING : 春季色彩映射。
-    COLORMAP_SUMMER : 夏季色彩映射。
-    COLORMAP_WINTER : 冬季色彩映射。*/
-
-    //将温度矩阵转化为CV_32F数据类型存储
-    Mat temperatureImage(512, 640, CV_32F, matrix);
-    //数据归一，将温度映射到0-1范围内,转为灰度图
-    normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
-    //将CV_32F数据转化为8位图像数据
-    Mat normalized8U;
-    temperatureImage.convertTo(normalized8U, CV_8U, 255.0);
-
-    try {
-        //将灰度图映射到对应的伪彩方案上
-        Mat coloredImage;
-        applyColorMap(normalized8U, coloredImage, COLORMAP_WINTER);
-
-        double brightness = 1;  //亮度范围0-3
-        int contrast = 50;  //对比度范围-100-100
-        adjustBrightnessContrast(coloredImage, brightness, contrast);
-
-        //显示图像
-        imshow("Temperature Image", coloredImage);
-        waitKey(1);
-    }
-    catch (Exception& e) {
-        cerr << "Exception caught: " << e.what() << endl;
-    }
-}
-//Y16矩阵成像
-void y16ToVideo(short* y16) {
-    Mat temperatureImage(512, 640, CV_16S, y16);
-    normalize(temperatureImage, temperatureImage, 0, 255, NORM_MINMAX);
-    Mat temperature8U;
-    temperatureImage.convertTo(temperature8U, CV_8U);
-
-    try {
-        Mat coloredImage;
-        applyColorMap(temperature8U, coloredImage, COLORMAP_WINTER);
-
-        double brightness = 1;  // 亮度范围0-3
-        int contrast = 50;      // 对比度范围-100-100
-        adjustBrightnessContrast(coloredImage, brightness, contrast);
-
-        imshow("Y16_Video", coloredImage);
-        waitKey(1);
-    }
-    catch (Exception& e) {
-        cerr << "Exception caught: " << e.what() << endl;
-    }
 }
 //拷机测试
 void StressTest(int n, SGP_HANDLE handle) {
@@ -448,3 +380,100 @@ void StressTest(int n, SGP_HANDLE handle) {
         j++;
     }
 }
+
+
+int gloableX = 1;
+int gloableY = 1;
+#define PRECISION 1
+//鼠标回调
+static void onMouse(int event, int x, int y, int flags, void* userdata) {
+    if (event == EVENT_MOUSEMOVE) {
+        Mat* temperatureImage = (Mat*)userdata;
+        float temperature = temperatureImage->at<float>(y, x);
+        gloableX = x;
+        gloableY = y;
+        //cout << "mouse position (" << x << ", " << y << ")"<< endl;
+    }
+}
+//调整亮度对比度
+void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
+    image.convertTo(image, -1, brightness, contrast);
+}
+//温度矩阵成像
+void matrixToVideo(float* matrix, float* output) {
+    cout << "position: (" << gloableX << "," << gloableY << ")  temp:"
+        << fixed << setprecision(PRECISION) << output[gloableY * 640 + gloableX - 1] << endl;
+
+    //将温度矩阵转化为CV_32F数据类型存储
+    Mat temperatureImage(512, 640, CV_32F, matrix);
+    //数据归一，将温度映射到0-1范围内,转为灰度图
+    normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
+    //将CV_32F数据转化为8位图像数据
+    Mat normalized8U;
+    temperatureImage.convertTo(normalized8U, CV_8U, 255.0);
+
+    try {
+        //将灰度图映射到对应的伪彩方案上
+        Mat coloredImage;
+        applyColorMap(normalized8U, coloredImage, COLORMAP_PARULA);
+
+        double brightness = 1;  //亮度范围0-3
+        int contrast = 50;  //对比度范围-100-100
+        adjustBrightnessContrast(coloredImage, brightness, contrast);
+
+        //显示图像
+        imshow("matrix_Video", coloredImage);
+        setMouseCallback("matrix_Video", onMouse, (void*)&temperatureImage);
+        waitKey(1);
+    }
+    catch (Exception& e) {
+        cerr << "Exception caught: " << e.what() << endl;
+    }
+}
+//Y16矩阵成像
+void y16ToVideo(short* y16) {
+    cout << "position: (" << gloableX << "," << gloableY << ")  Y16:" << y16[gloableY * 640 + gloableX - 1] << endl;
+    Mat temperatureImage(512, 640, CV_16S, y16);
+    normalize(temperatureImage, temperatureImage, 0, 255, NORM_MINMAX);
+    Mat temperature8U;
+    temperatureImage.convertTo(temperature8U, CV_8U);
+
+    try {
+        Mat coloredImage;
+        applyColorMap(temperature8U, coloredImage, COLORMAP_PARULA);
+
+        double brightness = 1;  // 亮度范围0-3
+        int contrast = 50;      // 对比度范围-100-100
+        adjustBrightnessContrast(coloredImage, brightness, contrast);
+
+        imshow("Y16_Video", coloredImage);
+        setMouseCallback("Y16_Video", onMouse, (void*)&temperatureImage);
+        waitKey(1);
+    }
+    catch (Exception& e) {
+        cerr << "Exception caught: " << e.what() << endl;
+    }
+}
+//获取温度矩阵最高温最低温
+void getMaxMinTemp(float* matrix) {
+    float max = matrix[0], min = matrix[0], avg = 0, sum = 0;
+    for (int i = 0; i < 640 * 512; i++)
+    {
+        if (matrix[i] >= max)
+        {
+            max = matrix[i];
+        }
+
+        if (min >= matrix[i])
+        {
+            min = matrix[i];
+        }
+        sum += matrix[i];
+    }
+
+    tee << getTime() << "  "
+        << "maxTemp:" << fixed << setprecision(2) << max << "  "
+        << "minTemp:" << fixed << setprecision(2) << min << "  "
+        << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;
+}
+
