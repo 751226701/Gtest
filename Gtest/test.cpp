@@ -269,7 +269,7 @@ void getTempMatrix(short* y16) {
     free(matrix);
     matrix = nullptr;
 }
-
+//启动线程
 void threadFunction()
 {
     SGP_OpenIrVideo(handle, GetIrRtsp, 0);
@@ -293,7 +293,6 @@ void threadFunction()
         Sleep(100);
     }
 }
-void Test();
 
 int main()
 { 
@@ -366,26 +365,6 @@ int main()
     
 }
 
-void Test()
-{
-    SGP_FOCUS_TYPE type = SGP_FOCUS_PLACE;
-    int value1 = 200;
-    int value2 = 600;
-    int ret = SGP_SetFocus(handle, type, value1);
-    cout << "ret is:" << ret << endl;
-
-    Sleep(1600);
-    int retq = SGP_SetFocus(handle, type, value2);
-    cout << "ret is:" << retq << endl;
-    Sleep(1600);
-    
-    /*cout << "第" << j-1 << "次打快门" << endl;
-    SGP_FOCUS_TYPE type = SGP_FOCUS_AUTO;
-    int value1 = 340;
-    int ret = SGP_SetFocus(handle, type, value1);
-    cout << "ret is:" << ret << endl;
-    Sleep(3000);*/
-}
 
 
 
