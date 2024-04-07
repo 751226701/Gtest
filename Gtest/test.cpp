@@ -274,7 +274,24 @@ void threadFunction()
 {
     SGP_OpenIrVideo(handle, GetIrRtsp, 0);
     SGP_GetY16(handle, GetY16Data, 0);
-    Sleep(99999999999);
+    while (true) {
+        if (GetAsyncKeyState(VK_UP) & 0x8000) {
+            gloableY -= 1;
+        }
+        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+            gloableY += 1;
+        }
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+            gloableX -= 1;
+        }
+        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+            gloableX += 1;
+        }
+        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+            break;
+        }
+        Sleep(100);
+    }
 }
 void Test();
 
@@ -306,27 +323,11 @@ int main()
     {
         cout << "µÇÂ½³É¹¦£¡" << endl;
 
-        /*thread myThread(threadFunction);
-        myThread.join();*/
+        thread myThread(threadFunction);
+        myThread.join();
        
-        SGP_OpenIrVideo(handle, GetIrRtsp, 0);
-        SGP_GetY16(handle, GetY16Data, 0);
-        while (true) {
-            if (GetAsyncKeyState(VK_UP) & 0x8000) {
-                gloableY -= 1;
-            }
-            if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-                gloableY += 1;
-            }
-            if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-                gloableX -= 1;
-            }
-            if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-                gloableX += 1;
-            }
-
-            Sleep(100); 
-        }
+       
+        
         
  
 
