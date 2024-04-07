@@ -192,6 +192,18 @@ void matrixToVideo(float* matrix) {
         imshow("matrix_Video", coloredImage);
         setMouseCallback("matrix_Video", onMouse, (void*)&temperatureImage);
         waitKey(1);
+        if (GetAsyncKeyState(VK_UP) & 0x8000) {
+            gloableY -= 1;
+        }
+        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+            gloableY += 1;
+        }
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+            gloableX -= 1;
+        }
+        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+            gloableX += 1;
+        }
     }
     catch (Exception& e) {
         cerr << "Exception caught: " << e.what() << endl;
@@ -207,7 +219,7 @@ void y16ToVideo(short* y16) {
 
     try {
         Mat coloredImage;
-        applyColorMap(temperature8U, coloredImage, COLORMAP_WINTER);
+        applyColorMap(temperature8U, coloredImage, COLORMAP_PARULA);
 
         double brightness = 1;  // 亮度范围0-3
         int contrast = 50;      // 对比度范围-100-100
@@ -216,6 +228,18 @@ void y16ToVideo(short* y16) {
         imshow("Y16_Video", coloredImage);
         setMouseCallback("Y16_Video", onMouse, (void*)&temperatureImage);
         waitKey(1);
+        if (GetAsyncKeyState(VK_UP) & 0x8000) {
+            gloableY -= 1;
+        }
+        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+            gloableY += 1;
+        }
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+            gloableX -= 1;
+        }
+        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+            gloableX += 1;
+        }
     }
     catch (Exception& e) {
         cerr << "Exception caught: " << e.what() << endl;
@@ -261,8 +285,8 @@ void getTempMatrix(short* y16) {
         return;
     }
 
-    y16ToVideo(y16);
-    //matrixToVideo(matrix);
+    //y16ToVideo(y16);
+    matrixToVideo(matrix);
     //callbackCounts();
     //getMaxMinTemp(matrix);
 
