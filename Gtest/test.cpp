@@ -192,18 +192,6 @@ void matrixToVideo(float* matrix) {
         imshow("matrix_Video", coloredImage);
         setMouseCallback("matrix_Video", onMouse, (void*)&temperatureImage);
         waitKey(1);
-        if (GetAsyncKeyState(VK_UP) & 0x8000) {
-            gloableY -= 1;
-        }
-        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-            gloableY += 1;
-        }
-        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-            gloableX -= 1;
-        }
-        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-            gloableX += 1;
-        }
     }
     catch (Exception& e) {
         cerr << "Exception caught: " << e.what() << endl;
@@ -228,18 +216,6 @@ void y16ToVideo(short* y16) {
         imshow("Y16_Video", coloredImage);
         setMouseCallback("Y16_Video", onMouse, (void*)&temperatureImage);
         waitKey(1);
-        if (GetAsyncKeyState(VK_UP) & 0x8000) {
-            gloableY -= 1;
-        }
-        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-            gloableY += 1;
-        }
-        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-            gloableX -= 1;
-        }
-        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-            gloableX += 1;
-        }
     }
     catch (Exception& e) {
         cerr << "Exception caught: " << e.what() << endl;
@@ -330,9 +306,27 @@ int main()
     {
         cout << "µÇÂ½³É¹¦£¡" << endl;
 
-        thread myThread(threadFunction);
-        myThread.join();
+        /*thread myThread(threadFunction);
+        myThread.join();*/
        
+        SGP_OpenIrVideo(handle, GetIrRtsp, 0);
+        SGP_GetY16(handle, GetY16Data, 0);
+        while (true) {
+            if (GetAsyncKeyState(VK_UP) & 0x8000) {
+                gloableY -= 1;
+            }
+            if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+                gloableY += 1;
+            }
+            if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+                gloableX -= 1;
+            }
+            if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+                gloableX += 1;
+            }
+
+            Sleep(100); 
+        }
         
  
 
