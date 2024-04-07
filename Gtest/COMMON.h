@@ -399,8 +399,41 @@ static void onMouse(int event, int x, int y, int flags, void* userdata) {
 void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
     image.convertTo(image, -1, brightness, contrast);
 }
-//温度矩阵成像
-void matrixToVideo(float* matrix, float* output) {
+//温度矩阵成像1
+void matrixToVideo(float* matrix) {
+    cout << "position: (" << gloableX << "," << gloableY << ")  temp:"
+        << fixed << setprecision(PRECISION) << matrix[gloableY * 640 + gloableX - 1] << endl;
+
+    //将温度矩阵转化为CV_32F数据类型存储
+    Mat temperatureImage(512, 640, CV_32F, matrix);
+    //数据归一，将温度映射到0-1范围内,转为灰度图
+    normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
+    //将CV_32F数据转化为8位图像数据
+    Mat normalized8U;
+    temperatureImage.convertTo(normalized8U, CV_8U, 255.0);
+
+    try {
+        //将灰度图映射到对应的伪彩方案上
+        Mat coloredImage;
+        applyColorMap(normalized8U, coloredImage, COLORMAP_PARULA);
+
+        double brightness = 1;  //亮度范围0-3
+        int contrast = 50;  //对比度范围-100-100
+        adjustBrightnessContrast(coloredImage, brightness, contrast);
+
+        //显示图像
+        imshow("matrix_Video", coloredImage);
+        setMouseCallback("matrix_Video", onMouse, (void*)&temperatureImage);
+        waitKey(1);
+
+        imwrite("matrix_image.jpg", coloredImage);
+    }
+    catch (Exception& e) {
+        cerr << "Exception caught: " << e.what() << endl;
+    }
+}
+//温度矩阵成像2
+void matrixToVideoEx(float* matrix, float* output) {
     cout << "position: (" << gloableX << "," << gloableY << ")  temp:"
         << fixed << setprecision(PRECISION) << output[gloableY * 640 + gloableX - 1] << endl;
 
@@ -449,6 +482,7 @@ void y16ToVideo(short* y16) {
         imshow("Y16_Video", coloredImage);
         setMouseCallback("Y16_Video", onMouse, (void*)&temperatureImage);
         waitKey(1);
+        imwrite("y16_image.jpg", coloredImage);
     }
     catch (Exception& e) {
         cerr << "Exception caught: " << e.what() << endl;

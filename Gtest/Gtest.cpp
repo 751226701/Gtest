@@ -46,7 +46,7 @@ void matrixToImage(SGP_HANDLE handle) {
             getMaxMinTemp(matrix);
 
             while (true) {
-                matrixToVideo(matrix, output);
+                matrixToVideoEx(matrix, output);
                 if (GetAsyncKeyState(VK_UP) & 0x8000) {
                     gloableY -= 1;
                 }
@@ -71,6 +71,66 @@ void matrixToImage(SGP_HANDLE handle) {
         output = NULL;
     }
 }
+//读取文件
+void* readFile(const char* filename, size_t* numElements, size_t elementSize) {
+    FILE* file = fopen(filename, "rb");
+
+    if (file == NULL) {
+        fprintf(stderr, "无法打开文件 %s\n", filename);
+        return NULL;
+    }
+
+    // 获取文件的大小
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    // 计算包含的元素个数
+    *numElements = fileSize / elementSize;
+
+    // 分配内存以存储数据
+    void* dataArray = malloc(fileSize);
+    if (dataArray == NULL) {
+        fprintf(stderr, "内存分配失败\n");
+        fclose(file);
+        return NULL;
+    }
+
+    // 从文件中读取数据到 dataArray
+    size_t elementsRead = fread(dataArray, elementSize, *numElements, file);
+    if (elementsRead != *numElements) {
+        fprintf(stderr, "读取文件时出现错误\n");
+        fclose(file);
+        free(dataArray);
+        return NULL;
+    }
+
+    // 关闭文件并返回 dataArray
+    fclose(file);
+    return dataArray;
+}
+//读取单帧温度矩阵转为图像
+void readMatrixToImage(const char* filename) {
+    size_t numElements;
+    float* matrixData = (float*)readFile(filename, &numElements, sizeof(float));
+    if (matrixData != NULL) {
+        printf("成功读取了 %zu 个 float 类型元素\n", numElements);
+    }
+    
+    matrixToVideo(matrixData);
+    free(matrixData);
+    matrixData = nullptr;
+}
+//读取单帧Y16矩阵转为图像
+void readY16ToImage(const char* filename) {
+    size_t numElements;
+    short* Y16Data = (short*)readFile(filename, &numElements, sizeof(short));
+    if (Y16Data != NULL) {
+        printf("成功读取了 %zu 个 short 类型元素\n", numElements);
+    }
+
+    y16ToVideo(Y16Data);
+}
 
 int main()
 {
@@ -84,7 +144,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.4";
+    const char* server = "192.168.21.244";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -94,11 +154,11 @@ int main()
         cout << "登录成功" << endl;
         GetVersionInfo(handle);
         
-        
-        matrixToImage(handle);
 
+        const char* filename = "D:\\Google_download\\y16.raw";
+        readY16ToImage(filename);
         
-        
+       
         
 
         
