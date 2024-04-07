@@ -152,11 +152,15 @@ static void GetY16Data(short* y16, int length, void* ptr)
     getTempMatrix(y16);
     //callbackCounts();
 }
+int gloableX = 1;
+int gloableY = 1;
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {
         Mat* temperatureImage = (Mat*)userdata;
         float temperature = temperatureImage->at<float>(y, x);
-        cout << "mouse position (" << x << ", " << y << ")"<< endl;
+        gloableX = x;
+        gloableY = y;
+        //cout << "mouse position (" << x << ", " << y << ")"<< endl;
     }
 }
 //调整亮度对比度
@@ -165,7 +169,8 @@ void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
 }
 //温度矩阵成像
 void matrixToVideo(float* matrix) {
-    
+    cout << "position: (" << gloableX <<"," << gloableY << ")  temp:" 
+        << fixed << setprecision(1) << matrix[gloableY * 640 + gloableX - 1] << endl;
     //将温度矩阵转化为CV_32F数据类型存储
     Mat temperatureImage(512, 640, CV_32F, matrix);
     //数据归一，将温度映射到0-1范围内,转为灰度图
@@ -194,6 +199,7 @@ void matrixToVideo(float* matrix) {
 }
 //Y16矩阵成像
 void y16ToVideo(short* y16) {
+    cout << "position: (" << gloableX << "," << gloableY << ")  Y16:"<< y16[gloableY * 640 + gloableX - 1] << endl;
     Mat temperatureImage(512, 640, CV_16S, y16);
     normalize(temperatureImage, temperatureImage, 0, 255, NORM_MINMAX);
     Mat temperature8U;
