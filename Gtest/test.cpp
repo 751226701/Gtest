@@ -154,6 +154,7 @@ static void GetY16Data(short* y16, int length, void* ptr)
 }
 int gloableX = 1;
 int gloableY = 1;
+#define PRECISION 1
 //鼠标回调
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {
@@ -171,7 +172,7 @@ void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
 //温度矩阵成像
 void matrixToVideo(float* matrix) {
     cout << "position: (" << gloableX <<"," << gloableY << ")  temp:" 
-        << fixed << setprecision(1) << matrix[gloableY * 640 + gloableX - 1] << endl;
+        << fixed << setprecision(PRECISION) << matrix[gloableY * 640 + gloableX - 1] << endl;
     //将温度矩阵转化为CV_32F数据类型存储
     Mat temperatureImage(512, 640, CV_32F, matrix);
     //数据归一，将温度映射到0-1范围内,转为灰度图
