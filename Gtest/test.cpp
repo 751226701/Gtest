@@ -154,6 +154,7 @@ static void GetY16Data(short* y16, int length, void* ptr)
 }
 int gloableX = 1;
 int gloableY = 1;
+//Êó±ê»Øµ÷
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {
         Mat* temperatureImage = (Mat*)userdata;
