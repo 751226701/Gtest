@@ -314,7 +314,7 @@ int main()
     tee << endl;
     tee << "Please enter the testing time:";
     cin >> n;*/
-    const char* server = "192.168.21.4";
+    const char* server = "192.168.21.245";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
