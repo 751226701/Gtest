@@ -19,6 +19,9 @@ using namespace cv;
 
 static int callbackCount = 0; 
 static auto lastSecond = chrono::system_clock::now();
+const int BUFFER_SIZE = 640 * 512 * sizeof(short);  //buffer大小，控制保存几帧高频Y16
+std::vector<short> buffer;
+std::ofstream fileStream;
 
 SGP_HANDLE handle = 0;
 void getTempMatrix(short* y16);
@@ -152,6 +155,21 @@ static void GetY16Data(short* y16, int length, void* ptr)
 { 
     getTempMatrix(y16);
     //callbackCounts();
+
+    /*buffer.insert(buffer.end(), y16, y16 + length);
+    if (buffer.size() >= BUFFER_SIZE) {
+        if (!fileStream.is_open()) {
+            fileStream.open("y16.raw", std::ios::out | std::ios::binary);
+            if (!fileStream) {
+                std::cerr << "Failed to open file for writing." << std::endl;
+                return;
+            }
+        }
+        fileStream.write(reinterpret_cast<const char*>(&buffer[0]), BUFFER_SIZE);
+        cout << "Save success!" << endl;
+        buffer.clear();
+        exit(EXIT_SUCCESS);
+    }*/
 }
 int gloableX = 1;
 int gloableY = 1;
