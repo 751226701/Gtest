@@ -154,6 +154,8 @@ void readY16ToImage(const char* filename) {
     }
 
     y16ToVideo(Y16Data);
+    free(Y16Data);
+    Y16Data = nullptr;
 }
 
 int main()
@@ -179,7 +181,7 @@ int main()
         GetVersionInfo(handle);
         
 
-       /* const char* filename = "D:\\APP\\WXWork\\1688855543386816\\Cache\\File\\2024-04\\matrix_test.raw";
+        /*const char* filename = "D:\\APP\\WXWork\\1688855543386816\\Cache\\File\\2024-04\\matrix_test.raw";
         readMatrixToImage(filename);*/
         matrixToImage(handle);
         //getHeatMap(handle);
