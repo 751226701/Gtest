@@ -154,8 +154,8 @@ static void GetIrRtsp(unsigned char* outdata, int w, int h, void* pUser)
 static void GetY16Data(short* y16, int length, void* ptr)
 { 
     getTempMatrix(y16);
-    //callbackCounts();
 
+    //±£´æµ¥Ö¡¸ßÆµY16
     /*buffer.insert(buffer.end(), y16, y16 + length);
     if (buffer.size() >= BUFFER_SIZE) {
         if (!fileStream.is_open()) {
