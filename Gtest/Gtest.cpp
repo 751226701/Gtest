@@ -155,9 +155,9 @@ int main()
         GetVersionInfo(handle);
         
 
-        const char* filename = "D:\\Google_download\\y16.raw";
-        readY16ToImage(filename);
-        
+        /*const char* filename = "D:\\Google_download\\y16.raw";
+        readY16ToImage(filename);*/
+        matrixToImage(handle);
        
         
 

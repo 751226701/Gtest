@@ -13,6 +13,7 @@
 #include "SgpApi.h"
 #include "SgpParam.h"
 #include "stdio.h"
+#include "ITADTD.h"
 using namespace std;
 using namespace cv;
 
@@ -184,7 +185,7 @@ void matrixToVideo(float* matrix) {
     try {
         //将灰度图映射到对应的伪彩方案上
         Mat coloredImage;
-        applyColorMap(normalized8U, coloredImage, COLORMAP_PARULA);
+        applyColorMap(normalized8U, coloredImage, COLORMAP_JET);
 
         double brightness = 1;  //亮度范围0-3
         int contrast = 50;  //对比度范围-100-100
@@ -209,7 +210,7 @@ void y16ToVideo(short* y16) {
 
     try {
         Mat coloredImage;
-        applyColorMap(temperature8U, coloredImage, COLORMAP_PARULA);
+        applyColorMap(temperature8U, coloredImage, COLORMAP_JET);
 
         double brightness = 1;  // 亮度范围0-3
         int contrast = 50;      // 对比度范围-100-100
@@ -314,7 +315,7 @@ int main()
     tee << endl;
     tee << "Please enter the testing time:";
     cin >> n;*/
-    const char* server = "192.168.21.4";
+    const char* server = "192.168.21.244";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
