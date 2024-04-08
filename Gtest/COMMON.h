@@ -385,6 +385,8 @@ void StressTest(int n, SGP_HANDLE handle) {
 int gloableX = 1;
 int gloableY = 1;
 #define PRECISION 1
+#define WIDTH 640
+#define HEIGHT 512
 //鼠标回调
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {
@@ -402,10 +404,10 @@ void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
 //温度矩阵成像1
 void matrixToVideo(float* matrix) {
     cout << "position: (" << gloableX << "," << gloableY << ")  temp:"
-        << fixed << setprecision(PRECISION) << matrix[gloableY * 640 + gloableX - 1] << endl;
+        << fixed << setprecision(PRECISION) << matrix[gloableY * WIDTH + gloableX - 1] << endl;
 
     //将温度矩阵转化为CV_32F数据类型存储
-    Mat temperatureImage(512, 640, CV_32F, matrix);
+    Mat temperatureImage(HEIGHT, WIDTH, CV_32F, matrix);
     //数据归一，将温度映射到0-1范围内,转为灰度图
     normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
     //将CV_32F数据转化为8位图像数据
@@ -415,7 +417,7 @@ void matrixToVideo(float* matrix) {
     try {
         //将灰度图映射到对应的伪彩方案上
         Mat coloredImage;
-        applyColorMap(normalized8U, coloredImage, COLORMAP_PARULA);
+        applyColorMap(normalized8U, coloredImage, COLORMAP_JET);
 
         double brightness = 1;  //亮度范围0-3
         int contrast = 50;  //对比度范围-100-100
@@ -435,10 +437,10 @@ void matrixToVideo(float* matrix) {
 //温度矩阵成像2
 void matrixToVideoEx(float* matrix, float* output) {
     cout << "position: (" << gloableX << "," << gloableY << ")  temp:"
-        << fixed << setprecision(PRECISION) << output[gloableY * 640 + gloableX - 1] << endl;
+        << fixed << setprecision(PRECISION) << output[gloableY * WIDTH + gloableX - 1] << endl;
 
     //将温度矩阵转化为CV_32F数据类型存储
-    Mat temperatureImage(512, 640, CV_32F, matrix);
+    Mat temperatureImage(HEIGHT, WIDTH, CV_32F, matrix);
     //数据归一，将温度映射到0-1范围内,转为灰度图
     normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
     //将CV_32F数据转化为8位图像数据
@@ -448,7 +450,7 @@ void matrixToVideoEx(float* matrix, float* output) {
     try {
         //将灰度图映射到对应的伪彩方案上
         Mat coloredImage;
-        applyColorMap(normalized8U, coloredImage, COLORMAP_PARULA);
+        applyColorMap(normalized8U, coloredImage, COLORMAP_JET);
 
         double brightness = 1;  //亮度范围0-3
         int contrast = 50;  //对比度范围-100-100
@@ -465,15 +467,15 @@ void matrixToVideoEx(float* matrix, float* output) {
 }
 //Y16矩阵成像
 void y16ToVideo(short* y16) {
-    cout << "position: (" << gloableX << "," << gloableY << ")  Y16:" << y16[gloableY * 640 + gloableX - 1] << endl;
-    Mat temperatureImage(512, 640, CV_16S, y16);
+    cout << "position: (" << gloableX << "," << gloableY << ")  Y16:" << y16[gloableY * WIDTH + gloableX - 1] << endl;
+    Mat temperatureImage(HEIGHT, WIDTH, CV_16S, y16);
     normalize(temperatureImage, temperatureImage, 0, 255, NORM_MINMAX);
     Mat temperature8U;
     temperatureImage.convertTo(temperature8U, CV_8U);
 
     try {
         Mat coloredImage;
-        applyColorMap(temperature8U, coloredImage, COLORMAP_PARULA);
+        applyColorMap(temperature8U, coloredImage, COLORMAP_JET);
 
         double brightness = 1;  // 亮度范围0-3
         int contrast = 50;      // 对比度范围-100-100

@@ -1,5 +1,29 @@
 ﻿#include "COMMON.h"
 
+//抓取热图和高压热图
+void getHeatMap(SGP_HANDLE handle) {
+    const char* path = "./testPicture/screenpic.jpg";
+    int ret = SGP_GetHeatMap(handle, path);
+    if (ret == SGP_OK)
+    {
+        cout << "获取热图成功" << endl;
+    }
+    else
+    {
+        cout << "获取热图失败\n" << "ret的返回值为：" << ret << endl;
+    }
+
+    const char* path1 = "./testPicture/screenpic.fir";
+    int ret1 = SGP_GetFirHeatMap(handle, path1);
+    if (ret1 == SGP_OK)
+    {
+        cout << "获取高压热图成功" << endl;
+    }
+    else
+    {
+        cout << "获取高压热图失败\n" << "ret的返回值为：" << ret << endl;
+    }
+}
 //连续获取热图间隔时间
 void getHeatMapIntervalTime(SGP_HANDLE handle) {
     std::chrono::steady_clock::time_point last_success_time;
@@ -144,7 +168,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.244";
+    const char* server = "192.168.21.4";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -155,11 +179,11 @@ int main()
         GetVersionInfo(handle);
         
 
-        /*const char* filename = "D:\\Google_download\\y16.raw";
-        readY16ToImage(filename);*/
+       /* const char* filename = "D:\\APP\\WXWork\\1688855543386816\\Cache\\File\\2024-04\\matrix_test.raw";
+        readMatrixToImage(filename);*/
         matrixToImage(handle);
+        //getHeatMap(handle);
        
-        
 
         
 
