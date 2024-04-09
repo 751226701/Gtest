@@ -86,7 +86,7 @@ void matrixToImage(SGP_HANDLE handle) {
                 if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
                     break;
                 }
-                Sleep(200);
+                Sleep(150);
             }
             free(output);
             output = NULL;
@@ -170,7 +170,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.4";
+    const char* server = "192.168.21.244";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;

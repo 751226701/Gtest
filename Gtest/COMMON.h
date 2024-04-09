@@ -456,6 +456,10 @@ void matrixToVideoEx(float* matrix, float* output) {
         int contrast = 50;  //对比度范围-100-100
         adjustBrightnessContrast(coloredImage, brightness, contrast);
 
+        //绘制十字光标
+        coloredImage.row(gloableY).setTo(Scalar(255, 0, 0));  // 水平线
+        coloredImage.col(gloableX).setTo(Scalar(255, 0, 0));  // 垂直线
+
         //显示图像
         imshow("matrix_Video", coloredImage);
         setMouseCallback("matrix_Video", onMouse, (void*)&temperatureImage);
