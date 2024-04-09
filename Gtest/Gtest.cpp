@@ -157,6 +157,20 @@ void readY16ToImage(const char* filename) {
     free(Y16Data);
     Y16Data = nullptr;
 }
+//保存温度矩阵
+void saveMatrix(char filename[], int length, float* matrix) {
+    FILE* file = fopen(filename, "wb");
+    if (file != NULL)
+    {
+        fwrite(matrix, sizeof(float), length, file);
+        fclose(file);
+        printf("温度矩阵信息已保存到文件：%s\n", filename);
+    }
+    else
+    {
+        printf("无法打开文件进行写入操作。\n");
+    }
+}
 
 int main()
 {
@@ -181,16 +195,15 @@ int main()
         GetVersionInfo(handle);
         
 
-        /*const char* filename = "D:\\APP\\WXWork\\1688855543386816\\Cache\\File\\2024-04\\matrix_test.raw";
+        /*const char* filename = "D:\\APP\\VS2022\\project\\Gtest\\Gtest\\temp_matrix.raw";
         readMatrixToImage(filename);*/
         matrixToImage(handle);
         //getHeatMap(handle);
        
-
+        
         
 
-        
-
+   
 
 
 

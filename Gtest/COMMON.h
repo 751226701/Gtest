@@ -384,7 +384,7 @@ void StressTest(int n, SGP_HANDLE handle) {
 
 int gloableX = 1;
 int gloableY = 1;
-#define PRECISION 1
+#define PRECISION 2
 #define WIDTH 640
 #define HEIGHT 512
 //Êó±ê»Øµ÷
