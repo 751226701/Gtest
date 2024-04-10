@@ -166,7 +166,7 @@ std::ostream& initTee(const std::string& logFilePath) {
 }
 //设置测温点坐标点
 int setPoint(int x, int y) {
-    return x + y * 640 - 1;
+    return x + y * 640;
 }
 //测试指定点的温度
 void testPointTemp(SGP_HANDLE handle)
