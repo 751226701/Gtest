@@ -174,6 +174,8 @@ static void GetY16Data(short* y16, int length, void* ptr)
 int gloableX = 1;
 int gloableY = 1;
 #define PRECISION 1
+#define WIDTH 640
+#define HEIGHT 512
 //鼠标回调
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {
@@ -191,9 +193,9 @@ void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
 //温度矩阵成像
 void matrixToVideo(float* matrix) {
     cout << "position: (" << gloableX <<"," << gloableY << ")  temp:" 
-        << fixed << setprecision(PRECISION) << matrix[gloableY * 640 + gloableX] << endl;
+        << fixed << setprecision(PRECISION) << matrix[gloableY * WIDTH + gloableX] << endl;
     //将温度矩阵转化为CV_32F数据类型存储
-    Mat temperatureImage(512, 640, CV_32F, matrix);
+    Mat temperatureImage(HEIGHT, WIDTH, CV_32F, matrix);
     //数据归一，将温度映射到0-1范围内,转为灰度图
     normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
     //将CV_32F数据转化为8位图像数据
@@ -220,8 +222,8 @@ void matrixToVideo(float* matrix) {
 }
 //Y16矩阵成像
 void y16ToVideo(short* y16) {
-    cout << "position: (" << gloableX << "," << gloableY << ")  Y16:"<< y16[gloableY * 640 + gloableX] << endl;
-    Mat temperatureImage(512, 640, CV_16S, y16);
+    cout << "position: (" << gloableX << "," << gloableY << ")  Y16:"<< y16[gloableY * WIDTH + gloableX] << endl;
+    Mat temperatureImage(HEIGHT, WIDTH, CV_16S, y16);
     normalize(temperatureImage, temperatureImage, 0, 255, NORM_MINMAX);
     Mat temperature8U;
     temperatureImage.convertTo(temperature8U, CV_8U);
