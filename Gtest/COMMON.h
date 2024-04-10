@@ -404,7 +404,7 @@ void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
 //温度矩阵成像1
 void matrixToVideo(float* matrix) {
     cout << "position: (" << gloableX << "," << gloableY << ")  temp:"
-        << fixed << setprecision(PRECISION) << matrix[gloableY * WIDTH + gloableX - 1] << endl;
+        << fixed << setprecision(PRECISION) << matrix[gloableY * WIDTH + gloableX] << endl;
 
     //将温度矩阵转化为CV_32F数据类型存储
     Mat temperatureImage(HEIGHT, WIDTH, CV_32F, matrix);
@@ -437,7 +437,7 @@ void matrixToVideo(float* matrix) {
 //温度矩阵成像2
 void matrixToVideoEx(float* matrix, float* output) {
     cout << "position: (" << gloableX << "," << gloableY << ")  temp:"
-        << fixed << setprecision(PRECISION) << output[gloableY * WIDTH + gloableX - 1] << endl;
+        << fixed << setprecision(PRECISION) << output[gloableY * WIDTH + gloableX] << endl;
 
     //将温度矩阵转化为CV_32F数据类型存储
     Mat temperatureImage(HEIGHT, WIDTH, CV_32F, matrix);
@@ -471,7 +471,7 @@ void matrixToVideoEx(float* matrix, float* output) {
 }
 //Y16矩阵成像
 void y16ToVideo(short* y16) {
-    cout << "position: (" << gloableX << "," << gloableY << ")  Y16:" << y16[gloableY * WIDTH + gloableX - 1] << endl;
+    cout << "position: (" << gloableX << "," << gloableY << ")  Y16:" << y16[gloableY * WIDTH + gloableX] << endl;
     Mat temperatureImage(HEIGHT, WIDTH, CV_16S, y16);
     normalize(temperatureImage, temperatureImage, 0, 255, NORM_MINMAX);
     Mat temperature8U;
