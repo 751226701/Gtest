@@ -174,8 +174,8 @@ static void GetY16Data(short* y16, int length, void* ptr)
 int gloableX = 1;
 int gloableY = 1;
 #define PRECISION 1
-#define WIDTH 640
-#define HEIGHT 512
+#define WIDTH 320
+#define HEIGHT 256
 //Êó±ê»Øµ÷
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {

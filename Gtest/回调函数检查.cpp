@@ -67,7 +67,6 @@ static void GetTempNotify(SGP_TEMPALARMNOTIFY notify, void* pUser)
         cout << notify.config.points[i].y << endl;
     }
 }
-
 static void GetFocusResult(int result, void* pUser)
 {
     printf("Focus result is %d\n", result);

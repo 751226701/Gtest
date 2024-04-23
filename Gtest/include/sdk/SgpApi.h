@@ -1093,12 +1093,20 @@ SGP_API int SGP_CommandSend(SGP_HANDLE handle, const char* data);
 * @brief        录制带温度信息的文件(调试中，暂时不写入用户手册）
 * @param
 * handle        输入参数，传入设备对象
-* path			输入参数，传入问文件路径
-* state			输入参数，传入录制开始或者停止的状态
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
 */
-SGP_API int SGP_RecordTempInfo(SGP_HANDLE handle, const char* path, const bool state);
+SGP_API int SGP_StartRecordTempInfo(SGP_HANDLE handle);
+
+/**
+* @brief        停止录制带温度信息的文件(调试中，暂时不写入用户手册）
+* @param
+* handle        输入参数，传入设备对象
+* path			输出参数，传出录制的文件路径
+* @return       成功返回SGP_OK，失败返回错误码
+* @note
+*/
+SGP_API int SGP_StopRecordTempInfo(SGP_HANDLE handle, char *path);
 
 /**
 * @brief		透传接口(调试中，暂时不写入用户手册）
@@ -1130,6 +1138,59 @@ SGP_API void SGP_GetUserToken(SGP_HANDLE handle, char* token);
 * @note
 */
 SGP_API int SGP_UploadAppPkg(SGP_HANDLE handle, char *path);
+
+/**
+* @brief		获取Y16数据,此接口用于调试保存一帧数据，包含（x16 y16 B K y8）
+* @param
+* handle        输入参数，传入设备对象
+* output		输出参数，y16数据
+* length		输入参数，y16传入的数据长度
+* @return       成功返回SGP_OK，失败返回错误码
+* @note
+*/
+SGP_API int SGP_GetY16Data(SGP_HANDLE handle, char **output, int* length);
+
+/**
+* @brief		云台操作控制
+* @param
+* handle        输入参数，传入设备对象
+* input			输入参数，云台操作信息
+* @return       成功返回SGP_OK，失败返回错误码
+* @note
+*/
+SGP_API int SGP_SetPtzControl(SGP_HANDLE handle, const SGP_PTZ_CONTROL_INFO &input);
+
+/**
+* @brief		云台预置位移动
+* @param
+* handle        输入参数，传入设备对象
+* index			输入参数，预置位索引，云台移动到此预置位，从1开始，最多255
+* @return       成功返回SGP_OK，失败返回错误码
+* @note
+*/
+SGP_API int SGP_MovePtzPreset(SGP_HANDLE handle, int index);
+
+/**
+* @brief		云台巡航组巡视
+* @param
+* handle        输入参数，传入设备对象
+* cruise_index	输入参数，巡航组索引，从1开始，最大巡航组数为8，以视辉产品为例
+* cruise_action	输入参数，巡航动作，0代表开始巡航，1代表停止巡航
+* @return       成功返回SGP_OK，失败返回错误码
+* @note
+*/
+SGP_API int SGP_ControlPtzPatrol(SGP_HANDLE handle, int cruise_index, int cruise_action);
+
+/**
+* @brief		控制IO输出开关
+* @param
+* handle        输入参数，传入设备对象
+* type			输入参数，开关类型 从1开始
+* value			输入参数，开关标志 0:关 1开
+* @return       成功返回SGP_OK，失败返回错误码
+* @note
+*/
+SGP_API int SGP_SetIOOutput(SGP_HANDLE handle, int type, int value);
 
 
 SGPSDK_STDC_END

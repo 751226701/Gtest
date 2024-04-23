@@ -93,7 +93,7 @@ TEST_F(SgpTest, 04_last_line)
     int* index = (int*)malloc(pointNum * sizeof(int));
     for (int i = 0; i < pointNum; i++)
     {
-        index[i] = i + 327040;
+        index[i] = i + 327039;
     }
     int ret = SGP_SetTempPoints(handle, index, pointNum, 1);
     EXPECT_EQ(ret, SGP_OK) << "04_last_line fail" << endl;
@@ -108,7 +108,7 @@ TEST_F(SgpTest, 05_first_column)
     int* index = (int*)malloc(pointNum * sizeof(int));
     for (int i = 0; i < pointNum; i++)
     {
-        index[i] = i * 640 - 1;
+        index[i] = i * 640;
     }
     int ret = SGP_SetTempPoints(handle, index, pointNum, 1);
     EXPECT_EQ(ret, SGP_OK) << "05_first_column fail" << endl;
@@ -319,7 +319,7 @@ TEST_F(SgpTest, 16_last_line_getTemp)
     int* index = (int*)malloc(pointNum * sizeof(int));
     for (int i = 0; i < pointNum; i++)
     {
-        index[i] = i + 327040;
+        index[i] = i + 327039;
     }
     int ret = SGP_SetTempPoints(handle, index, pointNum, 1);
     ASSERT_EQ(ret, SGP_OK) << "16_last_line fail" << endl;
@@ -349,7 +349,7 @@ TEST_F(SgpTest, 17_first_column_getTemp)
     int* index = (int*)malloc(pointNum * sizeof(int));
     for (int i = 0; i < pointNum; i++)
     {
-        index[i] = i * 640 - 1;
+        index[i] = i * 640;
     }
     int ret = SGP_SetTempPoints(handle, index, pointNum, 1);
     ASSERT_EQ(ret, SGP_OK) << "17_first_column fail" << endl;

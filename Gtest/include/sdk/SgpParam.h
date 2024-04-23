@@ -82,7 +82,7 @@ struct SGP_RECORD_INFO
 {
         int record_interval;//延时录制时间1-3600秒
         int record_max_size;//录制文件最大大小，单位M，1-1000
-        int record_time;//录制时长，1-3600分钟
+        int record_time;//录制时长，单位分钟，1-60
 };
 
 enum SGP_VIDEO_TYPE
@@ -164,8 +164,8 @@ struct SGP_RULE
 	int alarm_condition;//报警条件:1高于;2低于;3匹配;4高于和低于(web2.0支持1和2)
 	int alarm_flag;//是否报警:0不需要;1需要
 	int alarm_time;//去抖动时间,0-10秒
-	int alarm_interal;// 报警间隔时间，单位：秒。允许设置的间隔时长为：30， 60, 300， 600，900,1800， 3600
-	int alarm_type;//报警类型:1高温报警;2低温报警;3平均温报警;4最高温+最低温报警(web2.0 只支持1、2、3)
+	int alarm_interal;// 报警间隔时间,1-3600秒
+	int alarm_type;//报警类型:1高温报警;2低温报警;3平均温报警;4最高温+最低温报警;5温升报警;6温差报警(web1.0支持1、2、3、4 web2.0支持1、2、3、5、6)
 	float avg_temp;//平均温(基于设备的测温范围)
 	int flag;//是否启用配置:0不启用;1启用
 	float high_temp;//报警高温阈值(基于设备的测温范围)
@@ -183,40 +183,7 @@ struct SGP_RULE
 	int humi;//湿度,范围1-100
 	float opti_trans;//光学透过率0.01-1
 	float ref_temp;//反射温度-20~550,单位摄氏度(web2.0 -40到2000)
-	int show_type;//显示内容，范围1~8,1~5分别表示：1最高温，2最低温，3平均温度，4仅名称，5不显示。6~8属于预留部分
-};
-
-// 联调时发现Web端的请求体的数据结构如下
-// 弃用
-struct SGP_RULE_NEW
-{
-	int id;//分析对象id，内部分配，无需设置。
-	int alarm_condition;//报警条件:1高于;2低于;3匹配;4高于和低于(web2.0支持1和2)
-	int alarm_flag;//是否报警:0不需要;1需要
-	int alarm_time;//去抖动时间,0-10秒
-	int alarm_type;//报警类型:1高温报警;2低温报警;3平均温报警;4最高温+最低温报警(web2.0 只支持1、2、3)
-	int alarm_interal; // 报警间隔时间，单位：秒。允许设置的间隔时长为：30， 60, 300， 600，900,1800， 3600
-	float avg_temp;//平均温-20~550
-	int flag;//是否启用配置:0不启用;1启用
-	float high_temp;//报警高温阈值,-20~550
-	float low_temp;//报警低温阈值,-20~550
-	int points_num;
-	SGP_POINT points[7];//矩形，圆是四个点，顺时针顺序
-	char rule_name[STRING_LENGH];//规则名称，支持50字符
-	int show_location;//名称显示位置:1上方;2下方;3左方;4右方;5中间
-	float temp_mod;//温度误差
-	int type;//对象类型:1点;2线;3矩形;4多边形;5圆
-	float atmo_trans;//大气透过率0.01-1
-	float dist;//距离，单位米，0.1-20.0
-	float emiss;//发射率 0.1-1.0
-	int emiss_mode;//发射率类型:1标准;2自定义
-	int humi;//湿度,范围1-100
-	float opti_trans;//光学透过率0.01-1
-	float ref_temp;//反射温度-20~550,单位摄氏度(web2.0 -40到2000)
-	int show_type;//显示内容，范围1~8,1~5分别表示：1最高温，2最低温，3平均温度，4仅名称，5不显示。6~8属于预留部分
-	float diff_temp;
-	int preset;
-	int rate_temp;
+	int show_type;//显示内容，范围1~8,1~5分别表示：1最高温，2最低温，3平均温度，4仅名称，5不显示，6名称+最高温，7名称+最低温，8名称+平均温(web1.0仅支持1、2、3、4、5)
 };
 
 //矩阵坐标，4个点，顺时针顺序
@@ -229,12 +196,6 @@ struct SGP_RULE_ARRAY
 {
         int rule_num;
         SGP_RULE rule[ANALYTIC_MAX_NUM];//规则列表
-};
-
-struct SGP_RULE_ARRAY_NEW
-{
-	int rule_num;
-	SGP_RULE_NEW rule[ANALYTIC_MAX_NUM];//规则列表
 };
 
 enum SGP_IR_IMAGE_EFFECT_ENUM
@@ -377,7 +338,8 @@ struct SGP_COLD_HOT_TRACE_INFO
 {
         int light_hold;//闪光灯持续时间 10-300s
         int light_flag;//是否开启闪光灯 0:否; 1:是
-        int alarm_shake;//报警抖动,单位s,0-100
+        int alarm_shake;//去抖动时间,0-10秒
+		int alarm_interal;// 报警间隔时间，1-3600秒
         int capture_flag;//是否截图 0:否; 1:是
         int capture_stream;//截图类型 1:只截图可见光; 2:只截图红外; 3:截图红外和可见光(web2.0 截图类型 0:不截图)
         char high_color[STRING_LENGH];//高温颜色:0xRGB
@@ -392,15 +354,15 @@ struct SGP_COLD_HOT_TRACE_INFO
         int sendmail;//是否发送邮件 0:不发送; 1:发送
         int trace_flag;//是否开启 0:不开启; 1:开启
         int output_flag;//是否外部输出 0:不输出 1:输出
-        int output_hold;//外部输出持续时间 10-300s
+        int output_hold;//外部输出持续时间,1-300s
         int audio_flag;//是否音乐提醒 1:是; 0:否
         int audio_index;//音乐文件索引，0-2
         int audio_mode;//音乐播放模式 1:播放次数; 2:持续时间
         int audio_value;//音乐播放值,随模式定义:(持续时间:秒数)(播放次数:播放次数0-100)
         int effect_day_num;//时间数组数量
         SGP_EFFECT_DAY effect_day[7];//时间数组
-		int high_condition;//全局最高温对应的控制条件, 1:大于，0:小于
-		int low_condition;//全局最低温对应的控制条件, 1:大于，0:小于
+		int high_condition;//全局最高温对应的控制条件, 1:大于，2:小于
+		int low_condition;//全局最低温对应的控制条件, 1:大于，2:小于
 };
 
 struct SGP_TEMP_ALARM_INFO
@@ -412,7 +374,7 @@ struct SGP_TEMP_ALARM_INFO
         int alarm_flag;//是否开启报警 1:开启; 0:不开启(新web上该字段弃用)
         int light_hold;//闪光灯持续时间，10-300s
         int light_flag;//是否开启闪光灯 0:否; 1:是
-        int alarm_shake;//报警抖动0-100s(新web上仅在全局温度-报警参数设置-去抖动，功能上使用)
+        int alarm_shake;//去抖动时间,0-10秒(新web上仅在全局温度-报警参数设置-去抖动，功能上使用)
         int capture_flag;//是否截图 0:否; 1:是（web2.0上该字段弃用）
         int capture_stream;//截图类型 0:不截图; 1:只截图可见光; 2:只截图红外; 3:截图红外和可见光
         int record_delay;//录制时间 10-300s
@@ -420,7 +382,7 @@ struct SGP_TEMP_ALARM_INFO
         int record_stream;//录制类型 0:不录制; 1:只录制可见光; 2:只录制红外; 3:录制红外和可见光
         int sendmail;//是否发送邮件 0:不发送; 1:发送
         int output_flag;//是否外部输出 0:不输出 1:输出
-        int output_hold;//外部输出持续时间10-300s
+        int output_hold;//外部输出持续时间1-300s
         int effect_day_num;//时间数组数量
         SGP_EFFECT_DAY effect_day[7];//时间数组
 };
@@ -428,7 +390,7 @@ struct SGP_TEMP_ALARM_INFO
 struct SGP_ALARM_INPUT_INFO
 {
         int flag;//是否开启 0 不开启 1 开启
-        int alarm_shake;//报警抖动0-100s
+        int alarm_shake;//去抖动时间,0-10秒
         int type;//输入类型：0 常开型  1 常闭型
         int record_delay;//录制延时 10-300
         int record_flag;//是否录制 0:不录制; 1:录制
@@ -439,7 +401,7 @@ struct SGP_ALARM_INPUT_INFO
         int light_flag;//是否开启闪光灯 0:否; 1:是
         int light_hold;//闪光灯持续时间，10-300s
         int output_flag;//是否外部输出 0:不输出 1:输出
-        int output_hold;//外部输出持续时间10-300s
+        int output_hold;//外部输出持续时间1-300s
         int audio_flag;//是否音乐提醒 1:是; 0:否
         int audio_index;//音乐文件索引，0-2
         int audio_mode;//音乐播放模式 1:播放次数; 2:持续时间
@@ -500,6 +462,7 @@ struct SGP_NET_EXCEPTION_INFO
         int light_hold;//闪光灯持续时间10-300s
         int output_flag;//是否外部输出 0:不输出 1:输出
         int output_hold;//外部输出持续时间1-300s
+		int interval_time;// 报警间隔时间，单位：秒。允许设置的间隔时长为：30， 60, 300， 600，900,1800， 3600
 };
 
 struct SGP_ACCESS_VIOLATION_INFO
@@ -515,6 +478,7 @@ struct SGP_ACCESS_VIOLATION_INFO
         int light_hold;//闪光灯持续时间10-300s
         int output_flag;//是否外部输出 0:不输出 1:输出
         int output_hold;//外部输出持续时间10-300s
+		int lock_time;// 报警间隔时间，单位：秒。允许设置的间隔时长为：30， 60, 300， 600，900,1800， 3600		
 };
 
 
@@ -743,6 +707,57 @@ struct SGP_FILE_TEMP_INFO
 	int curveLens; // 长度
 	short *y16AndParaLineInfo; // y16和参数行信息
 	int length;		   // y16的参数行对应的字节数
+};
+
+struct SGP_PTZ_CONTROL_INFO
+{
+	int ptz_command;    /*1：代表灯光操作
+						2：代表雨刷操作
+						3：代表风扇操作
+						4：代表加热操作
+						5：代表扩展辅助设备1操作
+						6：代表变倍放大（焦距变大）
+						7：代表变倍缩小（焦距变小）
+						8：代表聚焦前调
+						9：代表聚焦后调
+						10：代表光圈扩大
+						11：代表光圈缩小
+						12：代表云台上仰
+						13：代表云台下俯
+						14：代表云台左转
+						15：代表云台右转
+						16：代表云台上仰和左转
+						17：代表云台上仰和右转
+						18：代表云台下俯和左转
+						19：代表云台下俯和右转
+						20：代表云台上仰和变倍放大（焦距变大）
+						21：代表云台上仰和变倍缩小（焦距变小）
+						22：代表云台下俯和变倍放大（焦距变大）
+						23：代表云台下俯和变倍缩小（焦距变小）
+						24：代表云台左转和变倍放大（焦距变大）
+						25：代表云台左转和变倍缩小（焦距变小）
+						26：代表云台右转和变倍放大（焦距变大）
+						27：代表云台右转和变倍缩小（焦距变小）
+						28：代表云台上仰和左转和变倍放大（焦距变大）
+						29：代表云台上仰和左转和变倍缩小（焦距变小）
+						30：代表云台上仰和右转和变倍放大（焦距变大）
+						31：代表云台上仰和右转和变倍缩小（焦距变小）
+						32：代表云台下俯和左转和变倍放大（焦距变大）
+						33：代表云台下俯和左转和变倍缩小（焦距变小）
+						34：代表云台下俯和右转和变倍放大（焦距变大）
+						35：代表云台下俯和右转和变倍缩小（焦距变小）
+						以上指令已设备端实现功能为准，不支持的设备暂时不用实现
+						*/
+	int ptz_action;		/*0：开始，1：停止，仅针对云台需要开始和停止控制指令的;
+						如果云台不需要开始和停止操作，则根据云台实际运行为准;
+						针对云台移动，变倍、聚焦、光圈等操作，如果设备不支持持续移动，设备只针对参数为0实时生效即可;
+						如果支持持续操作，即0开始执行，1结束执行。*/
+	int ptz_param1;		/*控制参数，此参数根据实际指令生效，
+						例如，云台转动时的步长为5，则此参数为5，如果参数为0，则按默认配置的步长移动*/
+	int ptz_param2;		/*扩展参数用，默认参数为0；
+						针对设备端的变倍和变焦功能，此参数0：代表双通道，1：代表可见光通道，2：代表红外通道，
+						变倍或者变焦动作可以通过此参数来区分通道来操作*/
+	int ptz_param3;		/*扩展参数用，默认参数为0*/
 };
 
 /**

@@ -382,11 +382,11 @@ void StressTest(int n, SGP_HANDLE handle) {
 }
 
 
-int gloableX = 1;
-int gloableY = 1;
+int gloableX = 320;
+int gloableY = 256;
 #define PRECISION 2
 #define WIDTH 640
-#define HEIGHT 512
+#define HEIGHT 480
 //Êó±ê»Øµ÷
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {

@@ -762,7 +762,7 @@ TEST_F(SgpTest, 063_AddThermometryRule_Line)
     rulePoint.flag = 1;
     rulePoint.high_temp = 35;
     rulePoint.low_temp = 28;
-    rulePoint.show_type = 1;
+    rulePoint.show_type = 6;
     rulePoint.points_num = 2; //点个数是1
     rulePoint.points[0].x = 250;
     rulePoint.points[0].y = 250;
