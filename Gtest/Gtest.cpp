@@ -27,7 +27,7 @@ void getHeatMap(SGP_HANDLE handle) {
 //连续获取热图间隔时间
 void getHeatMapIntervalTime(SGP_HANDLE handle) {
     std::chrono::steady_clock::time_point last_success_time;
-
+    
     while (true)
     {
         const char* path = "./testPicture/screenpic.jpg";
@@ -68,8 +68,9 @@ void getPointTempIntervalTime(SGP_HANDLE handle,int n) {
             auto end_time = std::chrono::steady_clock::now();
             if (ret == SGP_OK)
             {
-                cout << getTime() << " 获取点温成功" << std::endl;
-                cout << "距离上一次成功获取点温的时间间隔为：" << getTimeInterval(start_time, end_time) << std::endl;
+                //cout << getTime() << " 获取点温成功" << std::endl;
+                //cout << "距离上一次成功获取点温的时间间隔为：" << getTimeInterval(start_time, end_time) << std::endl;
+                tee << getTimeInterval(start_time, end_time) << endl;
             }
             else
             {
@@ -208,6 +209,17 @@ void saveMatrix(char filename[], int length, float* matrix) {
         printf("无法打开文件进行写入操作。\n");
     }
 }
+void saveMatrix2(float *output, char filename[]) {
+    std::ofstream outfile(filename, std::ios::binary);
+    if (outfile.is_open()) {
+        outfile.write(reinterpret_cast<char*>(output), sizeof(float) * 640 * 512);
+        outfile.close();
+        std::cout << "温度矩阵已成功写入文件" << std::endl;
+    }
+    else {
+        std::cerr << "无法打开文件" << std::endl;
+    }
+}
 
 int main()
 {
@@ -231,18 +243,16 @@ int main()
         cout << "登录成功" << endl;
         GetVersionInfo(handle);
         
-
-        /*const char* filename = "";
-        readMatrixToImage(filename);*/
+        const char* filename = "C:\\Users\\gd09186\\Desktop\\matrix.raw";
+        readMatrixToImage(filename);
         //matrixToImage(handle);
         //getHeatMap(handle);
+        
+        
+        
+    
        
         
-        
-        
-        
-        
-
 
 
 
@@ -266,5 +276,38 @@ int main()
     }
 }
 
-
+//int main()
+//{
+//    for (int i = 1; i < 200; i++)
+//    {
+//        cout << "第" << i << "轮" << endl;
+//        SGP_HANDLE handle = 0;
+//        handle = SGP_InitDevice();
+//        const char* server = "192.168.21.31";
+//        const char* username = "root";
+//        const char* password = "guide123";
+//        int port = 80;
+//        int ret1 = SGP_Login(handle, server, username, password, port);
+//        if (ret1 != SGP_OK)
+//        {
+//            cout << "登录失败！ ret is:" << ret1 << endl;;
+//            SGP_UnInitDevice(handle);
+//            return -1;
+//        }
+//
+//        cout << "登录成功" << endl;
+//        Sleep(2000);
+//        int retqq = SGP_Logout(handle);
+//        if (retqq == SGP_OK)
+//        {
+//            cout << "用户登出成功！" << endl;
+//        }
+//        else
+//        {
+//            cout << "用户登出失败！ ret is:" << retqq << endl;
+//        }
+//        SGP_UnInitDevice(handle);
+//        cout << endl;
+//    }
+//}
 

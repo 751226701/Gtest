@@ -174,8 +174,8 @@ static void GetY16Data(short* y16, int length, void* ptr)
 int gloableX = 1;
 int gloableY = 1;
 #define PRECISION 1
-#define WIDTH 320
-#define HEIGHT 256
+#define WIDTH 640
+#define HEIGHT 512
 //Êó±ê»Øµ÷
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {
@@ -285,9 +285,9 @@ void getTempMatrix(short* y16) {
     }
 
     //y16ToVideo(y16);
-    matrixToVideo(matrix);
+    //matrixToVideo(matrix);
     //callbackCounts();
-    //getMaxMinTemp(matrix);
+    getMaxMinTemp(matrix);
 
     free(matrix);
     matrix = nullptr;
@@ -335,7 +335,7 @@ int main()
     tee << endl;
     tee << "Please enter the testing time:";
     cin >> n;*/
-    const char* server = "192.168.21.4";
+    const char* server = "192.168.21.31";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;

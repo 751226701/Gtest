@@ -382,11 +382,11 @@ void StressTest(int n, SGP_HANDLE handle) {
 }
 
 
-int gloableX = 320;
-int gloableY = 256;
-#define PRECISION 2
-#define WIDTH 640
-#define HEIGHT 480
+int gloableX = 320;        //十字光标初始横坐标
+int gloableY = 256;        //十字光标初始纵坐标
+#define PRECISION 2        //温度的小数点位数
+#define WIDTH 640          //图像数据宽
+#define HEIGHT 512         //图像数据高
 //鼠标回调
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {
@@ -516,4 +516,5 @@ void getMaxMinTemp(float* matrix) {
         << "minTemp:" << fixed << setprecision(2) << min << "  "
         << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;
 }
+//保存温度矩阵
 

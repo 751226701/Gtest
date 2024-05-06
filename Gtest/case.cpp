@@ -177,6 +177,37 @@
             output = NULL;
         }
 
+//温度矩阵旋转
+        SGP_GENERAL_INFO info;
+        memset(&info, 0x00, sizeof(info));
+        int ret = SGP_GetGeneralInfo(handle, &info);
+        if (ret == SGP_OK)
+        {
+            int height = info.ir_model_h;
+            int width = info.ir_model_w;
+            int length = height * width;
+            int type = 1;
+            float* output = (float*)calloc(length, sizeof(float));
+            float* rotateOutput = (float*)calloc(length, sizeof(float));
+            if (output != NULL)
+            {
+                ret = SGP_GetImageTemps(handle, output, length * 4, type);
+                if (ret == SGP_OK)
+                {
+                    cout << "返回成功" << endl;
+                }
+                ret = SGP_GetTempMatriRotationEx(handle, rotateOutput, output, 640, 512, 2);
+                if (ret != SGP_OK) {
+                    return -1;
+                }
+                matrixToVideo(rotateOutput);  //旋转后注意修改成像的宽高
+            }
+            free(output);
+            free(rotateOutput);
+            output = NULL;
+            rotateOutput = NULL;
+        }
+
 
 三、拍照
 获取屏幕截图
@@ -315,11 +346,11 @@
             {
                 cout << "获取高压热图缓存成功" << endl;
                 cout << output_length << endl;
-                ofstream outputFile("heatMapCache.bin", std::ios::binary);
+                ofstream outputFile("firMapCache.bin", std::ios::binary);
                 if (outputFile.is_open()) {
                     outputFile.write(input, output_length);
                     outputFile.close();
-                    cout << "获取高压热图缓存成功，并保存为 heatMapCache.bin" << endl;
+                    cout << "获取高压热图缓存成功，并保存为 firMapCache.bin" << endl;
                 }
                 else {
                     cout << "无法打开文件以保存高压热图数据" << endl;
@@ -404,10 +435,12 @@ static void GetRecordStatus(int state, void* pUser)
             info.show_mode = 7;   //温度显示类型
             info.show_string = 5; //字符串显示位置
             info.opti_trans = 0.2;//光学透过率
-            info.isot_high = 20;
-            info.isot_low = 20;
-            strcpy(info.isot_high_color, "#00ff00");
-            strcpy(info.isot_low_color, "#00ff00");
+            info.isot_flag = 1;   //等温线开关
+            info.isot_high = 20;  //等温线高温阈值
+            info.isot_low = 20;   //等温线低温阈值
+            info.isot_type = 2;   //等温线类型
+            strcpy(info.isot_high_color, "#00ff00");   //等温线高温颜色
+            strcpy(info.isot_low_color, "#00ff00");    //等温线低温颜色
             ret = SGP_SetThermometryParam(handle, info);
             if (ret == SGP_OK)
             {
@@ -909,22 +942,34 @@ static void GetRecordStatus(int state, void* pUser)
 设置全局温度告警
         SGP_COLD_HOT_TRACE_INFO info;
         memset(&info, 0x00, sizeof(info));
-        int ret = SGP_GetColdHotTrace(handle, &info);       
+        int ret = SGP_GetColdHotTrace(handle, &info);
         if (ret == SGP_OK)
-        {          
+        {
+            info.alarm_interal = 300;
             info.high_flag = 1;
-            info.high_temp = 20;
+            info.high_temp =33;
             info.low_flag = 1;
-            info.low_temp = 30;
+            info.low_temp = 22;
             info.capture_flag = 1;
             info.capture_stream = 2;
             info.output_flag = 1;
-            info.output_hold = 15;
+            info.output_hold = 300;
             info.record_flag = 1;
             info.record_stream = 2;
             info.sendmail = 1;
-            info.record_delay = 200;
-            info.alarm_shake = 3;
+            info.record_delay = 300;
+            info.alarm_shake = 10;
+            info.trace_flag = 1;
+            strcpy(info.high_color, "#0000ff");
+            strcpy(info.low_color, "#ff0000");
+            for (int i = 0; i < 7; i++)
+            {
+                info.effect_day[i].day = i + 1;
+                info.effect_day[i].period_num = 7;
+                strcpy(info.effect_day[i].period->start, "12:00:00");
+                strcpy(info.effect_day[i].period->end, "22:59:59");
+            }
+
             ret = SGP_SetColdHotTrace(handle, info);
             if (ret == SGP_OK)
             {
@@ -1060,6 +1105,7 @@ static void GetRecordStatus(int state, void* pUser)
             info.flag = 1;
             info.output_flag = 1;
             info.output_hold = 20;
+            info.interval_time = 30;
             ret = SGP_SetNetException(handle, info);
             if (ret == SGP_OK)
             {
@@ -1101,6 +1147,7 @@ static void GetRecordStatus(int state, void* pUser)
             info.output_flag = 1;
             info.output_hold = 12;
             info.sendmail = 1;
+            info.lock_time = 30;
             ret = SGP_SetAccessViolation(handle, info);
             if (ret == SGP_OK)
             {
@@ -1138,14 +1185,20 @@ static void GetRecordStatus(int state, void* pUser)
         if (ret == SGP_OK)
         {
             info.alarm = 1;
-            info.alarm_value = 12;
+            info.alarm_value = 3600;
             info.enclosure = 1;
             info.encry_type = 2;
             info.health = 1;
-            info.health_value = 12;
+            info.health_value = 1;
             info.is_anon = 1;
-            info.mailto_num = 1;
-            info.smtp_port = 25;
+            info.mailto_num = 5;
+            info.smtp_port = 26;
+            strcpy(info.smtp_server, "192.168.21.111");
+            strcpy(info.username, "123456789");
+            strcpy(info.password, "123456");
+            strcpy(info.from, "123qq.com");
+            strcpy(info.subject, "TEST");
+            strcpy(info.mailto[1], "123qq.com");
             ret = SGP_SetEmilInfo(handle, info);
             if (ret == SGP_OK)
             {
@@ -1454,13 +1507,13 @@ static void GetRecordStatus(int state, void* pUser)
 
 获取校温信息
         SGP_MEASURE_TEMP_INFO output;
-        int ret = SGP_GetMeasureTempInfo(123, output);
+        int ret = SGP_GetMeasureTempInfo(handle, output);
         if (ret == SGP_OK)
         {
             cout << "获取成功！" << endl;
             cout << "实时快门温：" << output.realshuttertemp << endl;
             cout << "上次快门温：" << output.lastshuttertemp << endl;
-            cout << "实时快门温：" << output.realmirrortemp << endl;
+            cout << "实时镜筒温：" << output.realmirrortemp << endl;
         }
         else
         {

@@ -2,52 +2,25 @@
 using namespace std;
 
 
-class SgpTest : public testing::Test
-{
-public:
-    SGP_HANDLE handle;  
-
-    static void SetUpTestCase()
-    {
-        cout << "Start Test" << endl;
-    }
-    static void TearDownTestCase()
-    {
-        cout << "Test over" << endl;
-    }
-
-    void SetUp() override
-    {
-        handle = SGP_InitDevice();
-        ASSERT_NE(handle, 0) << "SGP_InitDevice failed!" << endl;
-        const char* server = "192.168.21.143";
-        const char* username = "root";
-        const char* password = "guide123";
-        int port = 80;
-        int retl = SGP_Login(handle, server, username, password, port);
-        ASSERT_EQ(retl, SGP_OK) << "SGP_Login failed" << endl;
-    }
-
-    void TearDown() override
-    {
-        int retq = SGP_Logout(handle);
-        EXPECT_EQ(retq, SGP_OK) << "SGP_Logout failed" << endl;
-
-        SGP_UnInitDevice(handle);
-    }
-};
-
 //class SgpTest : public testing::Test
 //{
 //public:
-//    static SGP_HANDLE handle;
+//    SGP_HANDLE handle;  
 //
 //    static void SetUpTestCase()
 //    {
+//        cout << "Start Test" << endl;
+//    }
+//    static void TearDownTestCase()
+//    {
+//        cout << "Test over" << endl;
+//    }
+//
+//    void SetUp() override
+//    {
 //        handle = SGP_InitDevice();
 //        ASSERT_NE(handle, 0) << "SGP_InitDevice failed!" << endl;
-//
-//        const char* server = "192.168.21.152";
+//        const char* server = "192.168.21.31";
 //        const char* username = "root";
 //        const char* password = "guide123";
 //        int port = 80;
@@ -55,26 +28,51 @@ public:
 //        ASSERT_EQ(retl, SGP_OK) << "SGP_Login failed" << endl;
 //    }
 //
-//    static void TearDownTestCase()
+//    void TearDown() override
 //    {
 //        int retq = SGP_Logout(handle);
 //        EXPECT_EQ(retq, SGP_OK) << "SGP_Logout failed" << endl;
-//
 //        SGP_UnInitDevice(handle);
 //    }
-//
-//    void SetUp() override
-//    {
-//        
-//    }
-//
-//    void TearDown() override
-//    {
-//        
-//    }
 //};
-//SGP_HANDLE SgpTest::handle;
 
+class SgpTest : public testing::Test
+{
+public:
+    static SGP_HANDLE handle;
+
+    static void SetUpTestCase()
+    {
+        handle = SGP_InitDevice();
+        ASSERT_NE(handle, 0) << "SGP_InitDevice failed!" << endl;
+
+        const char* server = "192.168.21.31";
+        const char* username = "root";
+        const char* password = "guide123";
+        int port = 80;
+        int retl = SGP_Login(handle, server, username, password, port);
+        ASSERT_EQ(retl, SGP_OK) << "SGP_Login failed" << endl;
+    }
+
+    static void TearDownTestCase()
+    {
+        int retq = SGP_Logout(handle);
+        EXPECT_EQ(retq, SGP_OK) << "SGP_Logout failed" << endl;
+
+        SGP_UnInitDevice(handle);
+    }
+
+    void SetUp() override
+    {
+        Sleep(1000);
+    }
+
+    void TearDown() override
+    {
+        
+    }
+};
+SGP_HANDLE SgpTest::handle;
 
 
 //01.修改密码
@@ -958,6 +956,7 @@ TEST_F(SgpTest, 068_UpdateThermometryRule)
     rule.high_temp = 20;
     rule.low_temp = 22;
     rule.show_type = 1;
+    rule.alarm_interal = 30;
     ret = SGP_UpdateThermometryRule(handle, rule);
     EXPECT_EQ(ret, SGP_OK) << "SGP_UpdateThermometryRule failed" << endl;
 }
@@ -1263,6 +1262,7 @@ TEST_F(SgpTest, 093_SetColdHotTrace)
     info.sendmail = 1;
     info.record_delay = 200;
     info.alarm_shake = 3;
+    info.alarm_interal = 300;
     ret = SGP_SetColdHotTrace(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetColdHotTrace failed" << endl;
 }
@@ -1282,6 +1282,7 @@ TEST_F(SgpTest, 094_GetColdHotTrace)
     cout << "low_flag:" << info.low_flag << endl;
     cout << "low_temp:" << info.low_temp << endl;
     cout << "sendmail:" << info.sendmail << endl;
+    cout << "alarm_interal" << info.alarm_interal << endl;
 }
 
 //95.设置分析对象告警
@@ -1367,6 +1368,7 @@ TEST_F(SgpTest, 099_SetNetException)
     info.flag = 1;
     info.output_flag = 1;
     info.output_hold = 20;
+    info.interval_time = 30;
     ret = SGP_SetNetException(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetNetException failed" << endl;
 }
@@ -1397,6 +1399,7 @@ TEST_F(SgpTest, 101_SetAccessViolation)
     info.output_flag = 1;
     info.output_hold = 12;
     info.sendmail = 1;
+    info.lock_time = 30;
     ret = SGP_SetAccessViolation(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetAccessViolation failed" << endl;
 }
@@ -1683,10 +1686,6 @@ TEST_F(SgpTest, 126_RebootSystem)
 //    int ret = SGP_FactoryReset(handle);
 //    EXPECT_EQ(ret, SGP_OK) << "SGP_FactoryReset failed";
 //}
-
-
-
-
 
 
 int main(int argc, char** argv)

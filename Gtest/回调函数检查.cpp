@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <windows.h>
 #include "SgpApi.h"
-#include  "SgpParam.h"
+#include "SgpParam.h"
 using namespace std;
 
 static void GetIrRtsp(unsigned char* outdata, int w, int h, void* pUser)
@@ -33,7 +33,6 @@ static void MemoryFull(SGP_MEMORYFULLNOTIFY notify, void* pUser)
 static void NetworkError(SGP_NETWORKERRORNOTIFY notify, void* pUser)
 
 {
-    //std::string ip(notify.ip);
     cout << "类型：" << notify.type << endl;
     cout << "ip:" << notify.ip << endl;
 }
@@ -86,7 +85,7 @@ int main()
         cout << "初始化失败" << endl;
     }*/
 
-    const char* server = "192.168.21.143";
+    const char* server = "192.168.21.31";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
