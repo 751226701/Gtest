@@ -933,6 +933,7 @@ static void GetRecordStatus(int state, void* pUser)
             cout << "low_flag:" << info.low_flag << endl;
             cout << "low_temp:" << info.low_temp << endl;
             cout << "sendmail:" << info.sendmail << endl;
+            cout << "alarm_interal:" << info.alarm_interal << endl;
         }
         else
         {
@@ -1022,6 +1023,13 @@ static void GetRecordStatus(int state, void* pUser)
             info.output_hold = 20;
             info.alarm_shake = 8;
             info.sendmail = 1;
+            for (int i = 0; i < 7; i++)
+            {
+                info.effect_day[i].day = i + 1;
+                info.effect_day[i].period_num = 7;
+                strcpy(info.effect_day[i].period->start, "12:00:00");
+                strcpy(info.effect_day[i].period->end, "22:59:59");
+            }
             ret = SGP_SetTempAlarm(handle, info);
             if (ret == SGP_OK)
             {

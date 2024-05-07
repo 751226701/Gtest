@@ -316,12 +316,12 @@ TEST_F(SgpTest, 015_SetThermometryParam)
     info.color_bar = 12;  //色带
     info.color_show = 1;  //色带显示
     info.flag = 1;        //测温开关
-    info.mod_temp = 1;    //温度修正
+    info.mod_temp = 0;    //温度修正
     info.ambient = 22;    //环境温度
     info.atmo_trans = 0.2;//大气透过率
-    info.dist = 10;      //距离
+    info.dist = 10;       //距离
     info.emiss = 0.5;     //发射率
-    info.emiss_mode = 2;  //发射率类型
+    info.emiss_mode = 1;  //发射率类型
     info.gear = 0;        //测温范围
     info.humi = 66;       //温度范围
     info.ref_temp = 23;   //反射温度
@@ -329,8 +329,41 @@ TEST_F(SgpTest, 015_SetThermometryParam)
     info.show_mode = 7;   //温度显示类型
     info.show_string = 5; //字符串显示位置
     info.opti_trans = 0.2;//光学透过率
+    info.isot_flag = 1;   //等温线开关
+    info.isot_high = 20;  //等温线高温阈值
+    info.isot_low = 20;   //等温线低温阈值
+    info.isot_type = 2;   //等温线类型
+    strcpy(info.isot_high_color, "#00ff00");   //等温线高温颜色
+    strcpy(info.isot_low_color, "#00ff00");    //等温线低温颜色
     ret = SGP_SetThermometryParam(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetThermometryParam failed" << endl;
+
+    SGP_THERMOMETRY_PARAM getInfo;
+    memset(&getInfo, 0x00, sizeof(getInfo));
+    ret = SGP_GetThermometryParam(handle, &getInfo);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetThermometryParam failed" << endl;
+    EXPECT_EQ(getInfo.color_bar, info.color_bar) << "assert color_bar failed" << endl;
+    EXPECT_EQ(getInfo.color_show, info.color_show) << "assert color_show failed" << endl;
+    EXPECT_EQ(getInfo.flag, info.flag) << "assert flag failed" << endl;
+    EXPECT_EQ(getInfo.mod_temp, info.mod_temp) << "assert mod_temp failed" << endl;
+    EXPECT_EQ(getInfo.ambient, info.ambient) << "assert ambient failed" << endl;
+    EXPECT_EQ(getInfo.atmo_trans, info.atmo_trans) << "assert atmo_trans failed" << endl;
+    EXPECT_EQ(getInfo.dist, info.dist) << "assert dist failed" << endl;
+    EXPECT_EQ(getInfo.emiss, info.emiss) << "assert emiss failed" << endl;
+    EXPECT_EQ(getInfo.emiss_mode, info.emiss_mode) << "assert emiss_mode failed" << endl;
+    EXPECT_EQ(getInfo.gear, info.gear) << "assert gear failed" << endl;
+    EXPECT_EQ(getInfo.humi, info.humi) << "assert humi failed" << endl;
+    EXPECT_EQ(getInfo.ref_temp, info.ref_temp) << "assert ref_temp failed" << endl;
+    EXPECT_STREQ(getInfo.show_desc, info.show_desc) << "assert show_desc failed" << endl;
+    EXPECT_EQ(getInfo.show_mode, info.show_mode) << "assert show_mode failed" << endl;
+    EXPECT_EQ(getInfo.show_string, info.show_string) << "assert show_string failed" << endl;
+    EXPECT_EQ(getInfo.opti_trans, info.opti_trans) << "assert opti_trans failed" << endl;
+    EXPECT_EQ(getInfo.isot_flag, info.isot_flag) << "assert isot_flag failed" << endl;
+    EXPECT_EQ(getInfo.isot_high, info.isot_high) << "assert isot_high failed" << endl;
+    EXPECT_EQ(getInfo.isot_low, info.isot_low) << "assert isot_low failed" << endl;
+    EXPECT_EQ(getInfo.isot_type, info.isot_type) << "assert isot_type failed" << endl;
+    EXPECT_STREQ(getInfo.isot_high_color, info.isot_high_color) << "assert isot_high_color failed" << endl;
+    EXPECT_STREQ(getInfo.isot_high_color, info.isot_high_color) << "assert isot_high_color failed" << endl;
 }
 
 //16.获取全局温度参数
@@ -731,7 +764,7 @@ TEST_F(SgpTest, 062_AddThermometryRule_Point)
     rulePoint.points_num = 1; //点个数是1
     rulePoint.points[0].x = 200;
     rulePoint.points[0].y = 200;
-    strcpy(rulePoint.rule_name, "Point");
+    strcpy(rulePoint.rule_name, "S1");
     rulePoint.show_location = 1;
     rulePoint.temp_mod = 1;
     rulePoint.type = 1;  //类型是1
@@ -744,6 +777,36 @@ TEST_F(SgpTest, 062_AddThermometryRule_Point)
     rulePoint.ref_temp = 25;
     int ret = SGP_AddThermometryRule(handle, rulePoint);
     EXPECT_EQ(ret, SGP_OK) << "SGP_AddThermometryRule_Point failed" << endl;
+
+    SGP_RULE_ARRAY array;
+    memset(&array, 0x00, sizeof(array));
+    ret = SGP_GetThermometryRule(handle, &array);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetThermometryRule failed" << endl;
+    EXPECT_EQ(array.rule[0].alarm_condition, rulePoint.alarm_condition) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_flag, rulePoint.alarm_flag) << "assert alarm_flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_time, rulePoint.alarm_time) << "assert alarm_time failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_type, rulePoint.alarm_type) << "assert alarm_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_interal, rulePoint.alarm_interal) << "assert alarm_interal failed!" << endl;
+    EXPECT_EQ(array.rule[0].avg_temp, rulePoint.avg_temp) << "assert avg_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].flag, rulePoint.flag) << "assert flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].high_temp, rulePoint.high_temp) << "assert high_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].low_temp, rulePoint.low_temp) << "assert low_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_type, rulePoint.show_type) << "assert show_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].points_num, rulePoint.points_num) << "assert points_num failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].x, rulePoint.points[0].x) << "assert points[0].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].y, rulePoint.points[0].y) << "assert points[0].y failed!" << endl;
+    EXPECT_STREQ(array.rule[0].rule_name, rulePoint.rule_name) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_location, rulePoint.show_location) << "assert show_location failed!" << endl;
+    EXPECT_EQ(array.rule[0].temp_mod, rulePoint.temp_mod) << "assert temp_mod failed!" << endl;
+    EXPECT_EQ(array.rule[0].type, rulePoint.type) << "assert type failed!" << endl;
+    EXPECT_EQ(array.rule[0].atmo_trans, rulePoint.atmo_trans) << "assert atmo_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].dist, rulePoint.dist) << "assert dist failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss, rulePoint.emiss) << "assert emiss failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss_mode, rulePoint.emiss_mode) << "assert emiss_mode failed!" << endl;
+    EXPECT_EQ(array.rule[0].humi, rulePoint.humi) << "assert humi failed!" << endl;
+    EXPECT_EQ(array.rule[0].opti_trans, rulePoint.opti_trans) << "assert opti_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].ref_temp, rulePoint.ref_temp) << "assert ref_temp failed!" << endl;
+    SGP_DeleteAllThermometryRule(handle);
 }
 
 //63.添加分析对象-线
@@ -760,13 +823,13 @@ TEST_F(SgpTest, 063_AddThermometryRule_Line)
     rulePoint.flag = 1;
     rulePoint.high_temp = 35;
     rulePoint.low_temp = 28;
-    rulePoint.show_type = 6;
-    rulePoint.points_num = 2; //点个数是1
+    rulePoint.show_type = 1;
+    rulePoint.points_num = 2; //点个数是2
     rulePoint.points[0].x = 250;
     rulePoint.points[0].y = 250;
     rulePoint.points[1].x = 300;
     rulePoint.points[1].y = 300;
-    strcpy(rulePoint.rule_name, "Line");
+    strcpy(rulePoint.rule_name, "L1");
     rulePoint.show_location = 1;
     rulePoint.temp_mod = 1;
     rulePoint.type = 2;  //类型是2
@@ -779,49 +842,42 @@ TEST_F(SgpTest, 063_AddThermometryRule_Line)
     rulePoint.ref_temp = 25;
     int ret = SGP_AddThermometryRule(handle, rulePoint);
     EXPECT_EQ(ret, SGP_OK) << "SGP_AddThermometryRule_Line failed" << endl;
+
+    SGP_RULE_ARRAY array;
+    memset(&array, 0x00, sizeof(array));
+    ret = SGP_GetThermometryRule(handle, &array);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetThermometryRule failed" << endl;
+    EXPECT_EQ(array.rule[0].alarm_condition, rulePoint.alarm_condition) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_flag, rulePoint.alarm_flag) << "assert alarm_flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_time, rulePoint.alarm_time) << "assert alarm_time failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_type, rulePoint.alarm_type) << "assert alarm_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_interal, rulePoint.alarm_interal) << "assert alarm_interal failed!" << endl;
+    EXPECT_EQ(array.rule[0].avg_temp, rulePoint.avg_temp) << "assert avg_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].flag, rulePoint.flag) << "assert flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].high_temp, rulePoint.high_temp) << "assert high_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].low_temp, rulePoint.low_temp) << "assert low_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_type, rulePoint.show_type) << "assert show_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].points_num, rulePoint.points_num) << "assert points_num failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].x, rulePoint.points[0].x) << "assert points[0].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].y, rulePoint.points[0].y) << "assert points[0].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[1].x, rulePoint.points[1].x) << "assert points[1].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[1].y, rulePoint.points[1].y) << "assert points[1].y failed!" << endl;
+    EXPECT_STREQ(array.rule[0].rule_name, rulePoint.rule_name) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_location, rulePoint.show_location) << "assert show_location failed!" << endl;
+    EXPECT_EQ(array.rule[0].temp_mod, rulePoint.temp_mod) << "assert temp_mod failed!" << endl;
+    EXPECT_EQ(array.rule[0].type, rulePoint.type) << "assert type failed!" << endl;
+    EXPECT_EQ(array.rule[0].atmo_trans, rulePoint.atmo_trans) << "assert atmo_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].dist, rulePoint.dist) << "assert dist failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss, rulePoint.emiss) << "assert emiss failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss_mode, rulePoint.emiss_mode) << "assert emiss_mode failed!" << endl;
+    EXPECT_EQ(array.rule[0].humi, rulePoint.humi) << "assert humi failed!" << endl;
+    EXPECT_EQ(array.rule[0].opti_trans, rulePoint.opti_trans) << "assert opti_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].ref_temp, rulePoint.ref_temp) << "assert ref_temp failed!" << endl;
+    SGP_DeleteAllThermometryRule(handle);
 }
 
-//64.添加分析对象-矩形
-TEST_F(SgpTest, 064_AddThermometryRule_Rectangle)
-{
-    SGP_RULE rulePoint;
-    memset(&rulePoint, 0x00, sizeof(SGP_RULE));
-    rulePoint.alarm_condition = 1;
-    rulePoint.alarm_flag = 1;
-    rulePoint.alarm_time = 10;
-    rulePoint.alarm_type = 1;
-    rulePoint.alarm_interal = 30;
-    rulePoint.avg_temp = 30;
-    rulePoint.flag = 1;
-    rulePoint.high_temp = 35;
-    rulePoint.low_temp = 28;
-    rulePoint.show_type = 1;
-    rulePoint.points_num = 4; //点个数是1
-    rulePoint.points[0].x = 362;
-    rulePoint.points[0].y = 90;
-    rulePoint.points[1].x = 497;
-    rulePoint.points[1].y = 90;
-    rulePoint.points[2].x = 497;
-    rulePoint.points[2].y = 175;
-    rulePoint.points[3].x = 362;
-    rulePoint.points[3].y = 175;
-    strcpy(rulePoint.rule_name, "Rectangle");
-    rulePoint.show_location = 1;
-    rulePoint.temp_mod = 1;
-    rulePoint.type = 3;  //类型是3
-    rulePoint.atmo_trans = 0.9;
-    rulePoint.dist = 2;
-    rulePoint.emiss = 0.8;
-    rulePoint.emiss_mode = 1;
-    rulePoint.humi = 80;
-    rulePoint.opti_trans = 1;
-    rulePoint.ref_temp = 25;
-    int ret = SGP_AddThermometryRule(handle, rulePoint);
-    EXPECT_EQ(ret, SGP_OK) << "SGP_AddThermometryRule_Rectangle failed" << endl;
-}
-
-//65.添加分析对象-圆
-TEST_F(SgpTest, 065_AddThermometryRule_Circle)
+//64.添加分析对象-圆
+TEST_F(SgpTest, 064_AddThermometryRule_Circle)
 {
     SGP_RULE rulePoint;
     memset(&rulePoint, 0x00, sizeof(SGP_RULE));
@@ -844,7 +900,7 @@ TEST_F(SgpTest, 065_AddThermometryRule_Circle)
     rulePoint.points[2].y = 100;
     rulePoint.points[3].x = 144;
     rulePoint.points[3].y = 133;
-    strcpy(rulePoint.rule_name, "Circle");
+    strcpy(rulePoint.rule_name, "C1");
     rulePoint.show_location = 1;
     rulePoint.temp_mod = 1;
     rulePoint.type = 5;  //类型是5
@@ -857,6 +913,117 @@ TEST_F(SgpTest, 065_AddThermometryRule_Circle)
     rulePoint.ref_temp = 25;
     int ret = SGP_AddThermometryRule(handle, rulePoint);
     EXPECT_EQ(ret, SGP_OK) << "SGP_AddThermometryRule_Rectangle_Circle failed" << endl;
+
+    SGP_RULE_ARRAY array;
+    memset(&array, 0x00, sizeof(array));
+    ret = SGP_GetThermometryRule(handle, &array);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetThermometryRule failed" << endl;
+    EXPECT_EQ(array.rule[0].alarm_condition, rulePoint.alarm_condition) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_flag, rulePoint.alarm_flag) << "assert alarm_flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_time, rulePoint.alarm_time) << "assert alarm_time failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_type, rulePoint.alarm_type) << "assert alarm_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_interal, rulePoint.alarm_interal) << "assert alarm_interal failed!" << endl;
+    EXPECT_EQ(array.rule[0].avg_temp, rulePoint.avg_temp) << "assert avg_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].flag, rulePoint.flag) << "assert flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].high_temp, rulePoint.high_temp) << "assert high_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].low_temp, rulePoint.low_temp) << "assert low_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_type, rulePoint.show_type) << "assert show_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].points_num, rulePoint.points_num) << "assert points_num failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].x, rulePoint.points[0].x) << "assert points[0].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].y, rulePoint.points[0].y) << "assert points[0].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[1].x, rulePoint.points[1].x) << "assert points[1].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[1].y, rulePoint.points[1].y) << "assert points[1].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[2].x, rulePoint.points[2].x) << "assert points[2].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[2].y, rulePoint.points[2].y) << "assert points[2].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[3].x, rulePoint.points[3].x) << "assert points[3].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[3].y, rulePoint.points[3].y) << "assert points[3].y failed!" << endl;
+    EXPECT_STREQ(array.rule[0].rule_name, rulePoint.rule_name) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_location, rulePoint.show_location) << "assert show_location failed!" << endl;
+    EXPECT_EQ(array.rule[0].temp_mod, rulePoint.temp_mod) << "assert temp_mod failed!" << endl;
+    EXPECT_EQ(array.rule[0].type, rulePoint.type) << "assert type failed!" << endl;
+    EXPECT_EQ(array.rule[0].atmo_trans, rulePoint.atmo_trans) << "assert atmo_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].dist, rulePoint.dist) << "assert dist failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss, rulePoint.emiss) << "assert emiss failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss_mode, rulePoint.emiss_mode) << "assert emiss_mode failed!" << endl;
+    EXPECT_EQ(array.rule[0].humi, rulePoint.humi) << "assert humi failed!" << endl;
+    EXPECT_EQ(array.rule[0].opti_trans, rulePoint.opti_trans) << "assert opti_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].ref_temp, rulePoint.ref_temp) << "assert ref_temp failed!" << endl;
+    SGP_DeleteAllThermometryRule(handle);
+}
+
+//65.添加分析对象-矩形
+TEST_F(SgpTest, 065_AddThermometryRule_Rectangle)
+{
+    SGP_RULE rulePoint;
+    memset(&rulePoint, 0x00, sizeof(SGP_RULE));
+    rulePoint.alarm_condition = 1;
+    rulePoint.alarm_flag = 1;
+    rulePoint.alarm_time = 10;
+    rulePoint.alarm_type = 1;
+    rulePoint.alarm_interal = 30;
+    rulePoint.avg_temp = 30;
+    rulePoint.flag = 1;
+    rulePoint.high_temp = 35;
+    rulePoint.low_temp = 28;
+    rulePoint.show_type = 1;
+    rulePoint.points_num = 4; //点个数是1
+    rulePoint.points[0].x = 362;
+    rulePoint.points[0].y = 90;
+    rulePoint.points[1].x = 497;
+    rulePoint.points[1].y = 90;
+    rulePoint.points[2].x = 497;
+    rulePoint.points[2].y = 175;
+    rulePoint.points[3].x = 362;
+    rulePoint.points[3].y = 175;
+    strcpy(rulePoint.rule_name, "R1");
+    rulePoint.show_location = 1;
+    rulePoint.temp_mod = 1;
+    rulePoint.type = 3;  //类型是3
+    rulePoint.atmo_trans = 0.9;
+    rulePoint.dist = 2;
+    rulePoint.emiss = 0.8;
+    rulePoint.emiss_mode = 1;
+    rulePoint.humi = 80;
+    rulePoint.opti_trans = 1;
+    rulePoint.ref_temp = 25;
+    int ret = SGP_AddThermometryRule(handle, rulePoint);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_AddThermometryRule_Rectangle failed" << endl;
+
+    SGP_RULE_ARRAY array;
+    memset(&array, 0x00, sizeof(array));
+    ret = SGP_GetThermometryRule(handle, &array);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetThermometryRule failed" << endl;
+    EXPECT_EQ(array.rule[0].alarm_condition, rulePoint.alarm_condition) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_flag, rulePoint.alarm_flag) << "assert alarm_flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_time, rulePoint.alarm_time) << "assert alarm_time failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_type, rulePoint.alarm_type) << "assert alarm_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_interal, rulePoint.alarm_interal) << "assert alarm_interal failed!" << endl;
+    EXPECT_EQ(array.rule[0].avg_temp, rulePoint.avg_temp) << "assert avg_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].flag, rulePoint.flag) << "assert flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].high_temp, rulePoint.high_temp) << "assert high_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].low_temp, rulePoint.low_temp) << "assert low_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_type, rulePoint.show_type) << "assert show_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].points_num, rulePoint.points_num) << "assert points_num failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].x, rulePoint.points[0].x) << "assert points[0].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].y, rulePoint.points[0].y) << "assert points[0].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[1].x, rulePoint.points[1].x) << "assert points[1].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[1].y, rulePoint.points[1].y) << "assert points[1].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[2].x, rulePoint.points[2].x) << "assert points[2].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[2].y, rulePoint.points[2].y) << "assert points[2].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[3].x, rulePoint.points[3].x) << "assert points[3].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[3].y, rulePoint.points[3].y) << "assert points[3].y failed!" << endl;
+    EXPECT_STREQ(array.rule[0].rule_name, rulePoint.rule_name) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_location, rulePoint.show_location) << "assert show_location failed!" << endl;
+    EXPECT_EQ(array.rule[0].temp_mod, rulePoint.temp_mod) << "assert temp_mod failed!" << endl;
+    EXPECT_EQ(array.rule[0].type, rulePoint.type) << "assert type failed!" << endl;
+    EXPECT_EQ(array.rule[0].atmo_trans, rulePoint.atmo_trans) << "assert atmo_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].dist, rulePoint.dist) << "assert dist failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss, rulePoint.emiss) << "assert emiss failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss_mode, rulePoint.emiss_mode) << "assert emiss_mode failed!" << endl;
+    EXPECT_EQ(array.rule[0].humi, rulePoint.humi) << "assert humi failed!" << endl;
+    EXPECT_EQ(array.rule[0].opti_trans, rulePoint.opti_trans) << "assert opti_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].ref_temp, rulePoint.ref_temp) << "assert ref_temp failed!" << endl;
+    SGP_DeleteAllThermometryRule(handle);
 }
 
 //66.添加分析对象-多边形
@@ -874,7 +1041,7 @@ TEST_F(SgpTest, 066_AddThermometryRule_Polygon)
     rulePoint.high_temp = 35;
     rulePoint.low_temp = 28;
     rulePoint.show_type = 1;
-    rulePoint.points_num = 6; //点个数是1
+    rulePoint.points_num = 7; //点个数是1
     rulePoint.points[0].x = 95;
     rulePoint.points[0].y = 166;
     rulePoint.points[1].x = 153;
@@ -889,7 +1056,7 @@ TEST_F(SgpTest, 066_AddThermometryRule_Polygon)
     rulePoint.points[5].y = 244;
     rulePoint.points[6].x = 72;
     rulePoint.points[6].y = 216;
-    strcpy(rulePoint.rule_name, "Polygon");
+    strcpy(rulePoint.rule_name, "P1");
     rulePoint.show_location = 1;
     rulePoint.temp_mod = 1;
     rulePoint.type = 4;  //类型是1
@@ -902,6 +1069,47 @@ TEST_F(SgpTest, 066_AddThermometryRule_Polygon)
     rulePoint.ref_temp = 25;
     int ret = SGP_AddThermometryRule(handle, rulePoint);
     EXPECT_EQ(ret, SGP_OK) << "SGP_AddThermometryRule_Rectangle_Polygon failed" << endl;
+
+    SGP_RULE_ARRAY array;
+    memset(&array, 0x00, sizeof(array));
+    ret = SGP_GetThermometryRule(handle, &array);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetThermometryRule failed" << endl;
+    EXPECT_EQ(array.rule[0].alarm_condition, rulePoint.alarm_condition) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_flag, rulePoint.alarm_flag) << "assert alarm_flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_time, rulePoint.alarm_time) << "assert alarm_time failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_type, rulePoint.alarm_type) << "assert alarm_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].alarm_interal, rulePoint.alarm_interal) << "assert alarm_interal failed!" << endl;
+    EXPECT_EQ(array.rule[0].avg_temp, rulePoint.avg_temp) << "assert avg_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].flag, rulePoint.flag) << "assert flag failed!" << endl;
+    EXPECT_EQ(array.rule[0].high_temp, rulePoint.high_temp) << "assert high_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].low_temp, rulePoint.low_temp) << "assert low_temp failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_type, rulePoint.show_type) << "assert show_type failed!" << endl;
+    EXPECT_EQ(array.rule[0].points_num, rulePoint.points_num) << "assert points_num failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].x, rulePoint.points[0].x) << "assert points[0].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[0].y, rulePoint.points[0].y) << "assert points[0].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[1].x, rulePoint.points[1].x) << "assert points[1].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[1].y, rulePoint.points[1].y) << "assert points[1].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[2].x, rulePoint.points[2].x) << "assert points[2].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[2].y, rulePoint.points[2].y) << "assert points[2].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[3].x, rulePoint.points[3].x) << "assert points[3].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[3].y, rulePoint.points[3].y) << "assert points[3].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[4].x, rulePoint.points[4].x) << "assert points[4].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[4].y, rulePoint.points[4].y) << "assert points[4].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[5].x, rulePoint.points[5].x) << "assert points[5].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[5].y, rulePoint.points[5].y) << "assert points[5].y failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[6].x, rulePoint.points[6].x) << "assert points[6].x failed!" << endl;
+    EXPECT_EQ(array.rule[0].points[6].y, rulePoint.points[6].y) << "assert points[6].y failed!" << endl;
+    EXPECT_STREQ(array.rule[0].rule_name, rulePoint.rule_name) << "assert alarm_condition failed!" << endl;
+    EXPECT_EQ(array.rule[0].show_location, rulePoint.show_location) << "assert show_location failed!" << endl;
+    EXPECT_EQ(array.rule[0].temp_mod, rulePoint.temp_mod) << "assert temp_mod failed!" << endl;
+    EXPECT_EQ(array.rule[0].type, rulePoint.type) << "assert type failed!" << endl;
+    EXPECT_EQ(array.rule[0].atmo_trans, rulePoint.atmo_trans) << "assert atmo_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].dist, rulePoint.dist) << "assert dist failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss, rulePoint.emiss) << "assert emiss failed!" << endl;
+    EXPECT_EQ(array.rule[0].emiss_mode, rulePoint.emiss_mode) << "assert emiss_mode failed!" << endl;
+    EXPECT_EQ(array.rule[0].humi, rulePoint.humi) << "assert humi failed!" << endl;
+    EXPECT_EQ(array.rule[0].opti_trans, rulePoint.opti_trans) << "assert opti_trans failed!" << endl;
+    EXPECT_EQ(array.rule[0].ref_temp, rulePoint.ref_temp) << "assert ref_temp failed!" << endl;
 }
 
 //67.获取分析对象
@@ -990,6 +1198,12 @@ TEST_F(SgpTest, 071_SetIrImageEffectParam_AUTO_SHUTTER_3)
     int value = 3;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_AUTO_SHUTTER_3 failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.auto_shutter, value) << "assert auto_shutter failed!" << endl;
 }
 
 //72.设置红外图像效果参数-亮度1
@@ -999,6 +1213,12 @@ TEST_F(SgpTest, 072_SetIrImageEffectParam_BRIGHTNESS_1)
     int value = 1;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_BRIGHTNESS_1 failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.brightness, value) << "assert brightness failed!" << endl;
 }
 
 //73.设置红外图像效果参数-亮度100
@@ -1008,6 +1228,12 @@ TEST_F(SgpTest, 073_SetIrImageEffectParam_BRIGHTNESS_100)
     int value = 100;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_BRIGHTNESS_100 failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.brightness, value) << "assert brightness failed!" << endl;
 }
 
 //74.设置红外图像效果参数-对比度1
@@ -1017,6 +1243,12 @@ TEST_F(SgpTest, 074_SetIrImageEffectParam_CONTRAST_1)
     int value = 1;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_CONTRAST_1 failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.contrast, value) << "assert contrast failed!" << endl;
 }
 
 //75.设置红外图像效果参数-对比度100
@@ -1026,6 +1258,12 @@ TEST_F(SgpTest, 075_SetIrImageEffectParam_CONTRAST_100)
     int value = 100;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_CONTRAST_100 failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.contrast, value) << "assert contrast failed!" << endl;
 }
 
 //76.设置红外图像效果参数-翻转开
@@ -1035,6 +1273,12 @@ TEST_F(SgpTest, 076_SetIrImageEffectParam_REVERSE_ON)
     int value = 1;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_REVERSE_ON failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.reverse, value) << "assert reverse failed!" << endl;
 }
 
 //77.设置红外图像效果参数-翻转关
@@ -1044,6 +1288,12 @@ TEST_F(SgpTest, 077_SetIrImageEffectParam_REVERSE_OFF)
     int value = 0;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_REVERSE_ON failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.reverse, value) << "assert reverse failed!" << endl;
 }
 
 //78.设置红外图像效果参数-锐度1
@@ -1053,6 +1303,12 @@ TEST_F(SgpTest, 078_SetIrImageEffectParam_SHARPNESS_1)
     int value = 1;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_SHARPNESS_1 failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.sharpness, value) << "assert sharpness failed!" << endl;
 }
 
 //79.设置红外图像效果参数-锐度1
@@ -1062,6 +1318,12 @@ TEST_F(SgpTest, 079_SetIrImageEffectParam_SHARPNESS_100)
     int value = 100;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_SHARPNESS_100 failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.sharpness, value) << "assert sharpness failed!" << endl;
 }
 
 //80.设置红外图像效果参数-细节增强开
@@ -1071,6 +1333,12 @@ TEST_F(SgpTest, 080_SetIrImageEffectParam_IEE_FLAG_ON)
     int value = 1;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_IEE_FLAG_ON failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.iee_flag, value) << "assert iee_flag failed!" << endl;
 }
 
 //81.设置红外图像效果参数-细节增强关
@@ -1080,6 +1348,12 @@ TEST_F(SgpTest, 081_SetIrImageEffectParam_IEE_FLAG_OFF)
     int value = 0;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_IEE_FLAG_OFF failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.iee_flag, value) << "assert iee_flag failed!" << endl;
 }
 
 //82.设置红外图像效果参数-细节增强值1
@@ -1089,6 +1363,12 @@ TEST_F(SgpTest, 082_SetIrImageEffectParam_IEE_VALUE_1)
     int value = 1;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_IEE_FLAG_OFF failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.iee_value, value) << "assert iee_value failed!" << endl;
 }
 
 //83.设置红外图像效果参数-细节增强值100
@@ -1098,6 +1378,12 @@ TEST_F(SgpTest, 083_SetIrImageEffectParam_IEE_VALUE_100)
     int value = 100;
     int ret = SGP_SetIrImageEffectParam(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SetIrImageEffectParam_IEE_FLAG_OFF failed" << endl;
+
+    SGP_IAMGE_EFFECT_PARAM_IR_CONFIG info;
+    memset(&info, 0x00, sizeof(info));
+    ret = SGP_GetIrImageEffectParam(handle, &info);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetIrImageEffectParam failed" << endl;
+    EXPECT_EQ(info.iee_value, value) << "assert iee_value failed!" << endl;
 }
 
 //84.获取红外图像效果参数
@@ -1128,6 +1414,17 @@ TEST_F(SgpTest, 085_SetNetInfo)
         info.mode = 0;
         ret = SGP_SetNetInfo(handle, info);
         EXPECT_EQ(ret, SGP_OK) << "SGP_SetNetInfo failed" << endl;
+
+        SGP_NET_INFO getInfo;
+        memset(&getInfo, 0x00, sizeof(getInfo));
+        ret = SGP_GetNetInfo(handle, &getInfo);
+        EXPECT_EQ(ret, SGP_OK) << "SGP_GetNetInfo failed" << endl;
+        EXPECT_STREQ(getInfo.dns1, info.dns1) << "assert dns1 failed!" << endl;
+        EXPECT_STREQ(getInfo.dns2, info.dns2) << "assert dns2 failed!" << endl;
+        EXPECT_STREQ(getInfo.gateway, info.gateway) << "assert gateway failed!" << endl;
+        EXPECT_STREQ(getInfo.host_name, info.host_name) << "assert host_name failed!" << endl;
+        EXPECT_STREQ(getInfo.netmask, info.netmask) << "assert netmask failed!" << endl;
+        EXPECT_EQ(getInfo.mode, info.mode) << "assert mode failed!" << endl;
     }
 }
 
@@ -1157,6 +1454,15 @@ TEST_F(SgpTest, 087_SetPortInfo)
     //info.tcp_port = 100;
     ret = SGP_SetPortInfo(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetPortInfo failed" << endl;
+
+    SGP_PORT_INFO getInfo;
+    memset(&getInfo, 0x00, sizeof(getInfo));
+    ret = SGP_GetPortInfo(handle, &getInfo);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetPortInfo failed" << endl;
+    EXPECT_EQ(getInfo.max_connectios, info.max_connectios) << "assert max_connectios failed!" << endl;
+    EXPECT_EQ(getInfo.http_port, info.http_port) << "assert http_port failed!" << endl;
+    EXPECT_EQ(getInfo.rtsp_port, info.rtsp_port) << "assert rtsp_port failed!" << endl;
+    EXPECT_EQ(getInfo.onvif_check, info.onvif_check) << "assert onvif_check failed!" << endl;
 }
 
 //88.获取端口信息
@@ -1186,6 +1492,14 @@ TEST_F(SgpTest, 089_SetRecordInfo)
     info.record_time = 10;
     ret = SGP_SetRecordInfo(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetRecordInfo failed" << endl;
+
+    SGP_RECORD_INFO getInfo;
+    memset(&getInfo, 0x00, sizeof(getInfo));
+    ret = SGP_GetRecordInfo(handle, &getInfo);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetRecordInfo failed" << endl;
+    EXPECT_EQ(getInfo.record_interval, info.record_interval) << "assert record_interval failed!" << endl;
+    EXPECT_EQ(getInfo.record_max_size, info.record_max_size) << "assert record_max_size failed!" << endl;
+    EXPECT_EQ(getInfo.record_time, info.record_time) << "assert record_time failed!" << endl;
 }
 
 //90.获取录制信息
@@ -1219,6 +1533,19 @@ TEST_F(SgpTest, 091_SetShieldArea)
     info.rect[1].h = 150;
     ret = SGP_SetShieldArea(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetShieldArea failed" << endl;
+
+    SGP_SHIELD_AREA_INFO getInfo;
+    memset(&getInfo, 0x00, sizeof(getInfo));
+    ret = SGP_GetShieldArea(handle, &getInfo);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetShieldArea failed" << endl;
+    EXPECT_EQ(getInfo.rect[0].x, info.rect[0].x) << "assert rect[0].x failed!" << endl;
+    EXPECT_EQ(getInfo.rect[0].y, info.rect[0].y) << "assert rect[0].y failed!" << endl;
+    EXPECT_EQ(getInfo.rect[0].w, info.rect[0].w) << "assert rect[0].w failed!" << endl;
+    EXPECT_EQ(getInfo.rect[0].h, info.rect[0].h) << "assert rect[0].h failed!" << endl;
+    EXPECT_EQ(getInfo.rect[1].x, info.rect[1].x) << "assert rect[0].x failed!" << endl;
+    EXPECT_EQ(getInfo.rect[1].y, info.rect[1].y) << "assert rect[0].y failed!" << endl;
+    EXPECT_EQ(getInfo.rect[1].w, info.rect[1].w) << "assert rect[0].w failed!" << endl;
+    EXPECT_EQ(getInfo.rect[1].h, info.rect[1].h) << "assert rect[0].h failed!" << endl;
 }
 
 //92.获取屏蔽区域
@@ -1250,21 +1577,46 @@ TEST_F(SgpTest, 093_SetColdHotTrace)
     int ret = SGP_GetColdHotTrace(handle, &info);
     ASSERT_EQ(ret, SGP_OK) << "SGP_GetColdHotTrace failed" << endl;
     info.high_flag = 1;
-    info.high_temp = 22;
+    info.high_temp = 33;
     info.low_flag = 1;
-    info.low_temp = 33;
+    info.low_temp = 22;
     info.capture_flag = 1;
     info.capture_stream = 2;
     info.output_flag = 1;
-    info.output_hold = 15;
+    info.output_hold = 300;
     info.record_flag = 1;
     info.record_stream = 2;
     info.sendmail = 1;
-    info.record_delay = 200;
-    info.alarm_shake = 3;
+    info.record_delay = 300;
+    info.alarm_shake = 10;
     info.alarm_interal = 300;
+    info.trace_flag = 1;    //冷热点追踪
+    strcpy(info.high_color, "#0000ff");
+    strcpy(info.low_color, "#ff0000");
     ret = SGP_SetColdHotTrace(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetColdHotTrace failed" << endl;
+
+    SGP_COLD_HOT_TRACE_INFO getInfo;
+    memset(&getInfo, 0x00, sizeof(getInfo));
+    ret = SGP_GetColdHotTrace(handle, &getInfo);
+    EXPECT_EQ(ret, SGP_OK) << "SGP_GetColdHotTrace failed" << endl;
+    EXPECT_EQ(getInfo.high_flag, info.high_flag) << "assert high_flag failed!" << endl;
+    EXPECT_EQ(getInfo.high_temp, info.high_temp) << "assert high_temp failed!" << endl;
+    EXPECT_EQ(getInfo.low_flag, info.low_flag) << "assert low_flag failed!" << endl;
+    EXPECT_EQ(getInfo.low_temp, info.low_temp) << "assert low_temp failed!" << endl;
+    EXPECT_EQ(getInfo.capture_flag, info.capture_flag) << "assert capture_flag failed!" << endl;
+    EXPECT_EQ(getInfo.capture_stream, info.capture_stream) << "assert capture_stream failed!" << endl;
+    EXPECT_EQ(getInfo.output_flag, info.output_flag) << "assert output_flag failed!" << endl;
+    EXPECT_EQ(getInfo.output_hold, info.output_hold) << "assert output_hold failed!" << endl;
+    EXPECT_EQ(getInfo.record_flag, info.record_flag) << "assert record_flag failed!" << endl;
+    EXPECT_EQ(getInfo.record_stream, info.record_stream) << "assert record_stream failed!" << endl;
+    EXPECT_EQ(getInfo.sendmail, info.sendmail) << "assert sendmail failed!" << endl;
+    EXPECT_EQ(getInfo.record_delay, info.record_delay) << "assert record_delay failed!" << endl;
+    EXPECT_EQ(getInfo.alarm_shake, info.alarm_shake) << "assert alarm_shake failed!" << endl;
+    EXPECT_EQ(getInfo.alarm_interal, info.alarm_interal) << "assert alarm_interal failed!" << endl;
+    EXPECT_EQ(getInfo.trace_flag, info.trace_flag) << "assert trace_flag failed!" << endl;
+    EXPECT_STREQ(getInfo.high_color, info.high_color) << "assert high_color failed!" << endl;
+    EXPECT_STREQ(getInfo.low_color, info.low_color) << "assert low_color failed!" << endl;
 }
 
 //94.获取全局温度告警
@@ -1304,6 +1656,21 @@ TEST_F(SgpTest, 095_SetTempAlarm)
     info.sendmail = 1;
     ret = SGP_SetTempAlarm(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetTempAlarm failed" << endl;
+
+    SGP_TEMP_ALARM_INFO getInfo;
+    memset(&getInfo, 0x00, sizeof(getInfo));
+    ret = SGP_GetTempAlarm(handle, &getInfo);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetTempAlarm failed" << endl;
+    EXPECT_EQ(getInfo.alarm_flag, info.alarm_flag) << "assert alarm_flag failed!" << endl;
+    EXPECT_EQ(getInfo.capture_flag, info.capture_flag) << "assert capture_flag failed!" << endl;
+    EXPECT_EQ(getInfo.capture_stream, info.capture_stream) << "assert capture_stream failed!" << endl;
+    EXPECT_EQ(getInfo.record_flag, info.record_flag) << "assert record_flag failed!" << endl;
+    EXPECT_EQ(getInfo.record_stream, info.record_stream) << "assert record_stream failed!" << endl;
+    EXPECT_EQ(getInfo.record_delay, info.record_delay) << "assert record_delay failed!" << endl;
+    EXPECT_EQ(getInfo.output_flag, info.output_flag) << "assert output_flag failed!" << endl;
+    EXPECT_EQ(getInfo.output_hold, info.output_hold) << "assert output_hold failed!" << endl;
+    EXPECT_EQ(getInfo.alarm_shake, info.alarm_shake) << "assert alarm_shake failed!" << endl;
+    EXPECT_EQ(getInfo.sendmail, info.sendmail) << "assert sendmail failed!" << endl;
 }
 
 //96.获取分析对象告警
@@ -1337,9 +1704,17 @@ TEST_F(SgpTest, 097_SetVideoParam)
     param.gop_size = param.fps * 2;
     param.bit_size = info.ir_model_w * info.ir_model_h * param.fps * 8 * 3 / 2 / 1024 / 18;
     param.level = 1;
-
     ret = SGP_SetVideoParam(handle, type, param);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetVideoParam failed" << endl;
+
+    SGP_VIDEO_PARAM getParam;
+    memset(&getParam, 0x00, sizeof(getParam));
+    ret = SGP_GetVideoParam(handle, type, &getParam);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetVideoParam failed" << endl;
+    EXPECT_EQ(getParam.fps, param.fps) << "assert fps failed!" << endl;
+    EXPECT_EQ(getParam.gop_size, param.gop_size) << "assert gop_size failed!" << endl;
+    EXPECT_EQ(getParam.bit_size, param.bit_size) << "assert bit_size failed!" << endl;
+    EXPECT_EQ(getParam.level, param.level) << "assert level failed!" << endl;
 }
 
 //98.获取视频参数
@@ -1371,6 +1746,15 @@ TEST_F(SgpTest, 099_SetNetException)
     info.interval_time = 30;
     ret = SGP_SetNetException(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetNetException failed" << endl;
+
+    SGP_NET_EXCEPTION_INFO getInfo;
+    memset(&getInfo, 0x00, sizeof(getInfo));
+    ret = SGP_GetNetException(handle, &getInfo);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetNetException failed" << endl;
+    EXPECT_EQ(getInfo.flag, info.flag) << "assert flag failed!" << endl;
+    EXPECT_EQ(getInfo.output_flag, info.output_flag) << "assert output_flag failed!" << endl;
+    EXPECT_EQ(getInfo.output_hold, info.output_hold) << "assert output_hold failed!" << endl;
+    EXPECT_EQ(getInfo.interval_time, info.interval_time) << "assert interval_time failed!" << endl;
 }
 
 //100.获取网络异常
@@ -1402,6 +1786,17 @@ TEST_F(SgpTest, 101_SetAccessViolation)
     info.lock_time = 30;
     ret = SGP_SetAccessViolation(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetAccessViolation failed" << endl;
+
+    SGP_ACCESS_VIOLATION_INFO getInfo;
+    memset(&getInfo, 0x00, sizeof(getInfo));
+    ret = SGP_GetAccessViolation(handle, &getInfo);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetAccessViolation failed" << endl;
+    EXPECT_EQ(getInfo.allow_count, info.allow_count) << "assert allow_count failed!" << endl;
+    EXPECT_EQ(getInfo.flag, info.flag) << "assert flag failed!" << endl;
+    EXPECT_EQ(getInfo.output_flag, info.output_flag) << "assert output_flag failed!" << endl;
+    EXPECT_EQ(getInfo.output_hold, info.output_hold) << "assert output_hold failed!" << endl;
+    EXPECT_EQ(getInfo.sendmail, info.sendmail) << "assert sendmail failed!" << endl;
+    EXPECT_EQ(getInfo.lock_time, info.lock_time) << "assert lock_time failed!" << endl;
 }
 
 //102.获取非法访问
@@ -1428,16 +1823,42 @@ TEST_F(SgpTest, 103_SetEmilInfo)
     ASSERT_EQ(ret, SGP_OK) << "SGP_GetEmilInfo failed" << endl;
 
     info.alarm = 1;
-    info.alarm_value = 12;
+    info.alarm_value = 3600;
     info.enclosure = 1;
     info.encry_type = 2;
     info.health = 1;
-    info.health_value = 12;
+    info.health_value = 1;
     info.is_anon = 1;
-    info.mailto_num = 1;
-    info.smtp_port = 25;
+    info.mailto_num = 5;
+    info.smtp_port = 26;
+    strcpy(info.smtp_server, "192.168.21.111");
+    strcpy(info.username, "123456789");
+    strcpy(info.password, "123456");
+    strcpy(info.from, "123qq.com");
+    strcpy(info.subject, "TEST");
+    strcpy(info.mailto[1], "123qq.com");
     ret = SGP_SetEmilInfo(handle, info);
     EXPECT_EQ(ret, SGP_OK) << "SGP_SetEmilInfo failed" << endl;
+
+    SGP_EMAIL_INFO getInfo;
+    memset(&getInfo, 0x00, sizeof(getInfo));
+    ret = SGP_GetEmilInfo(handle, &getInfo);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetEmilInfo failed" << endl;
+    EXPECT_EQ(getInfo.alarm, info.alarm) << "assert alarm failed!" << endl;
+    EXPECT_EQ(getInfo.alarm_value, info.alarm_value) << "assert alarm_value failed!" << endl;
+    EXPECT_EQ(getInfo.enclosure, info.enclosure) << "assert enclosure failed!" << endl;
+    EXPECT_EQ(getInfo.encry_type, info.encry_type) << "assert encry_type failed!" << endl;
+    EXPECT_EQ(getInfo.health, info.health) << "assert health failed!" << endl;
+    EXPECT_EQ(getInfo.health_value, info.health_value) << "assert health_value failed!" << endl;
+    EXPECT_EQ(getInfo.is_anon, info.is_anon) << "assert is_anon failed!" << endl;
+    EXPECT_EQ(getInfo.mailto_num, info.mailto_num) << "assert mailto_num failed!" << endl;
+    EXPECT_EQ(getInfo.smtp_port, info.smtp_port) << "assert smtp_port failed!" << endl;
+    EXPECT_STREQ(getInfo.smtp_server, info.smtp_server) << "assert smtp_server failed!" << endl;
+    EXPECT_STREQ(getInfo.username, info.username) << "assert username failed!" << endl;
+    EXPECT_STREQ(getInfo.password, info.password) << "assert password failed!" << endl;
+    EXPECT_STREQ(getInfo.from, info.from) << "assert from failed!" << endl;
+    EXPECT_STREQ(getInfo.subject, info.subject) << "assert subject failed!" << endl;
+    EXPECT_STREQ(getInfo.mailto[1], info.mailto[1]) << "assert mailto[1] failed!" << endl;
 }
 
 //104.获取邮件信息
@@ -1586,6 +2007,12 @@ TEST_F(SgpTest, 118_SetFocus_SGP_FOCUS_PLACE_0)
     int value = 0;
     int ret = SGP_SetFocus(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SGP_FOCUS_PLACE_0 failed" << endl;
+
+    Sleep(2500);
+    int getValue = 0;
+    ret = SGP_GetMotorPosition(handle, &getValue);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetMotorPosition failed" << endl;
+    ASSERT_EQ(getValue, value) << "assert SGP_FOCUS_PLACE failed" << endl;
 }
 
 //119.设置电机位置750
@@ -1595,6 +2022,12 @@ TEST_F(SgpTest, 119_SetFocus_SGP_FOCUS_PLACE_750)
     int value = 750;
     int ret = SGP_SetFocus(handle, type, value);
     EXPECT_EQ(ret, SGP_OK) << "SGP_FOCUS_PLACE_750 failed" << endl;
+
+    Sleep(2500);
+    int getValue = 0;
+    ret = SGP_GetMotorPosition(handle, &getValue);
+    ASSERT_EQ(ret, SGP_OK) << "SGP_GetMotorPosition failed" << endl;
+    ASSERT_EQ(getValue, value) << "assert SGP_FOCUS_PLACE failed" << endl;
 }
 
 //120.获取电机位置
@@ -1691,7 +2124,7 @@ TEST_F(SgpTest, 126_RebootSystem)
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
-    //::testing::GTEST_FLAG(filter) = "SgpTest.065_AddThermometryRule_Circle";
+    ::testing::GTEST_FLAG(filter) = "SgpTest.093_SetColdHotTrace";
     return RUN_ALL_TESTS();
 }
 
