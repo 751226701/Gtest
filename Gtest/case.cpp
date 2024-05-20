@@ -1528,7 +1528,15 @@ static void GetRecordStatus(int state, void* pUser)
             cout << "获取失败！ret is:" << ret << endl;
         }
 
-
+RS485透传
+        const char* data = "05 03 00 00 00 7F 05 AE";
+        int ret = SGP_CommandSend(handle, data);
+        if (ret != SGP_OK) {
+            cout << "error! ret is:" << ret << endl;
+        }
+        else {
+            cout << "发送成功！" << endl;
+        }
 
 
 

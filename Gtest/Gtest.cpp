@@ -234,8 +234,8 @@ int main()
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
     const char* server = "192.168.21.31";
-    const char* username = "root";
-    const char* password = "guide123";
+    const char* username = "user";
+    const char* password = "user123";
     int port = 80;
     int ret1 = SGP_Login(handle, server, username, password, port);
     if (ret1 == SGP_OK)
@@ -249,14 +249,6 @@ int main()
         //getHeatMap(handle);
         
 
-        const char* data = "05 03 00 00 00 7F 05 AE";
-        int ret = SGP_CommandSend(handle, data);
-        if (ret != SGP_OK) {
-            cout << "error! ret is:" << ret << endl;
-        }
-        else {
-            cout << "发送成功！" << endl;
-        }
         
         
         
@@ -285,7 +277,7 @@ int main()
 
 //int main()
 //{
-//    for (int i = 1; i < 200; i++)
+//    for (int i = 1; i < 201; i++)
 //    {
 //        cout << "第" << i << "轮" << endl;
 //        SGP_HANDLE handle = 0;

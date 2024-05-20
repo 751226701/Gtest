@@ -264,7 +264,7 @@ void GetVersionInfo(SGP_HANDLE handle) {
     cout << endl;
 }
 //¿½»ú²âÊÔ
-void StressTest(int n, SGP_HANDLE handle) {
+void StressTest(SGP_HANDLE handle, int n) {
     int j = 1;
     int errCount = 0;
     while (j <= 360 * n)
@@ -314,7 +314,7 @@ void StressTest(int n, SGP_HANDLE handle) {
         }
         tee << endl;
 
-        Sleep(3000);
+        Sleep(5000);
         SGP_SHUTTER_ENUM typek = SGP_SHUTTER;
         int retk = SGP_DoShutter(handle, typek);
         if (retk == SGP_OK)

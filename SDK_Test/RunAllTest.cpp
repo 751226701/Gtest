@@ -46,7 +46,7 @@ public:
         handle = SGP_InitDevice();
         ASSERT_NE(handle, 0) << "SGP_InitDevice failed!" << endl;
 
-        const char* server = "192.168.21.31";
+        const char* server = "192.168.21.143";
         const char* username = "root";
         const char* password = "guide123";
         int port = 80;
@@ -2124,7 +2124,7 @@ TEST_F(SgpTest, 126_RebootSystem)
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
-    ::testing::GTEST_FLAG(filter) = "SgpTest.093_SetColdHotTrace";
+    //::testing::GTEST_FLAG(filter) = "SgpTest.093_SetColdHotTrace";
     return RUN_ALL_TESTS();
 }
 

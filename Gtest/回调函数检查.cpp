@@ -85,7 +85,7 @@ int main()
         cout << "³õÊ¼»¯Ê§°Ü" << endl;
     }*/
 
-    const char* server = "192.168.21.31";
+    const char* server = "192.168.21.143";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
