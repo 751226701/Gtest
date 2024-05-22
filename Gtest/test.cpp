@@ -261,8 +261,7 @@ void getMaxMinTemp(float* matrix) {
         sum += matrix[i];
     }
 
-    tee << getTime() << "  "
-        << "maxTemp:" << fixed << setprecision(2) << max << "  "
+    tee << "maxTemp:" << fixed << setprecision(2) << max << "  "
         << "minTemp:" << fixed << setprecision(2) << min << "  "
         << "avgTemp:" << fixed << setprecision(2) << sum / (640 * 512) << endl;
 }

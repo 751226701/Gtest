@@ -20,7 +20,6 @@ typedef unsigned long long SGP_HANDLE;
 #define RANGE_MAX_NUM 3
 #define ANALYTIC_MAX_NUM 21
 #define SHIELD_AREA_MAX_NUM 2
-#define HISTORY_INFO_MAX_NUM 1000
 
 #define SGP_OK              (0)//正常
 #define SGP_ERR             (1)//错误
@@ -46,7 +45,6 @@ typedef unsigned long long SGP_HANDLE;
 #define SGP_ERR_10020       (10020)//密码重复
 #define SGP_ERR_10021       (10021)//请求温度矩阵时，正在打快门
 #define SGP_ERR_10022       (10022)//请求温度矩阵时，正在切测温范围
-#define SGP_ERR_19999       (19999)//API不支持
 
 struct SGP_RANGE
 {
@@ -123,27 +121,27 @@ struct SGP_THERMOMETRY_PARAM
         int color_bar;//色带1-26
         int color_show;//色带显示0~1
         int flag;//测温开关0~1
-        float mod_temp;//温度修正 ℃(-1.0~1.0)
-        int show_mode;//温度显示方式：0 不显示 1 最高温 2 最低温 3 平均温 4 最高温 + 最低温 5 最高温 + 平均温 6 平均温 + 最低温 7 最高温 + 最低温 + 平均温
+        float mod_temp;//温度修正
+        int show_mode;//温度显示方式：1 最高温 2 最低温 3 平均温 4 最高温 + 最低温 5 最高温 + 平均温 6 平均温 + 最低温 7 最高温 + 最低温 + 平均温 8不显示
         int gear;//测温范围
         int show_string; //是否使用字符叠加 1:关闭; 2, 4, 5:右下; 3:右上
                          //IPM630 1:关闭; 5:右下
                          //IPM640M 1:关闭; 2:左上; 3:右上; 4:左下; 5:右下
         char show_desc[STRING_LENGH];//显示字符串
         float atmo_trans;//大气透过率0.01-1
-        float dist;//距离，单位米，0.1-20.0(web2.0的距离范围: 0.1-200)
+        float dist;//距离，单位米，0.1-20.0
         float emiss;//发射率 0.1-1.0
         int emiss_mode;//发射率类型:1标准;2自定义
         int humi;//湿度,范围1-100
         float opti_trans;//光学透过率0.01-1
         float ref_temp;//反射温度-20~550,单位摄氏度(web2.0的反射温度范围: -40-2000)
         int isot_flag;//等温线开关0:关闭;1开启(工业机芯支持)
-        float isot_high;//等温线高温阈值-40~2000
-        char isot_high_color[STRING_LENGH];//等温线高温颜色,十六进制值,如红色:0xff0000
-        int isot_low;//等温线低温阈值-40~2000
-        char isot_low_color[STRING_LENGH];//等温线低温颜色,十六进制值,如红色:0xff0000
+        float isot_high;//高温阈值0~400
+        char isot_high_color[STRING_LENGH];//高温颜色,十六进制值,如红色:0xff0000
+        int isot_low;//低温阈值-50~-100
+        char isot_low_color[STRING_LENGH];//低温颜色,十六进制值,如红色:0xff0000
         int isot_type;//范围类型:1 关闭等温线效果 2 开启高等温线 3 开启低等温线 4 开启区间内等温线 5 开启区间外等温线
-        float ambient;//环境温度 -40~2000
+        float ambient;//环境温度
 };
 
 struct SGP_POINT
@@ -167,13 +165,11 @@ struct SGP_RULE
 	int alarm_flag;//是否报警:0不需要;1需要
 	int alarm_time;//去抖动时间,0-10秒
 	int alarm_interal;// 报警间隔时间,1-3600秒
-	int alarm_type;//报警类型:1高温报警;2低温报警;3平均温报警;4最高温+最低温报警;5温升报警;6温差报警(web1.0支持1、2、3、4 web2.0支持1、2、3、5、6)	
+	int alarm_type;//报警类型:1高温报警;2低温报警;3平均温报警;4最高温+最低温报警;5温升报警;6温差报警(web1.0支持1、2、3、4 web2.0支持1、2、3、5、6)
+	float avg_temp;//平均温(基于设备的测温范围)
 	int flag;//是否启用配置:0不启用;1启用
-	float avg_temp;//报警平均温阈值(基于设备的测温范围)
 	float high_temp;//报警高温阈值(基于设备的测温范围)
 	float low_temp;//报警低温阈值(基于设备的测温范围)
-	float rate_temp;//报警温升阈值
-	float diff_temp;//报警温差阈值
 	int points_num;
 	SGP_POINT points[7];//矩形，圆是四个点，顺时针顺序
 	char rule_name[STRING_LENGH];//规则名称，支持50字符
@@ -187,7 +183,7 @@ struct SGP_RULE
 	int humi;//湿度,范围1-100
 	float opti_trans;//光学透过率0.01-1
 	float ref_temp;//反射温度-20~550,单位摄氏度(web2.0 -40到2000)
-	int show_type;//显示内容，范围1~8,1~8分别表示：1最高温，2最低温，3平均温度，4仅名称，5不显示，6名称+最高温，7名称+最低温，8名称+平均温(web1.0仅支持1、2、3、4、5)
+	int show_type;//显示内容，范围1~8,1~5分别表示：1最高温，2最低温，3平均温度，4仅名称，5不显示，6名称+最高温，7名称+最低温，8名称+平均温(web1.0仅支持1、2、3、4、5)
 };
 
 //矩阵坐标，4个点，顺时针顺序
@@ -312,8 +308,8 @@ struct SGP_PORT_INFO
 
 struct SGP_RECT
 {
-        int x;//x坐标，1-(图像宽-1)
-        int y;//y坐标， 1-(图像高-1)
+        int x;//x坐标，1-图像宽
+        int y;//y坐标， 1-图像高
         int w;//区域宽，与坐标共同作用，取值范围1-图像宽
         int h;//区域高，与坐标共同作用，取值范围1-图像高
 };
@@ -358,7 +354,7 @@ struct SGP_COLD_HOT_TRACE_INFO
         int sendmail;//是否发送邮件 0:不发送; 1:发送
         int trace_flag;//是否开启 0:不开启; 1:开启
         int output_flag;//是否外部输出 0:不输出 1:输出
-        int output_hold;//外部输出持续时间,10-300s
+        int output_hold;//外部输出持续时间,1-300s
         int audio_flag;//是否音乐提醒 1:是; 0:否
         int audio_index;//音乐文件索引，0-2
         int audio_mode;//音乐播放模式 1:播放次数; 2:持续时间
@@ -386,7 +382,7 @@ struct SGP_TEMP_ALARM_INFO
         int record_stream;//录制类型 0:不录制; 1:只录制可见光; 2:只录制红外; 3:录制红外和可见光
         int sendmail;//是否发送邮件 0:不发送; 1:发送
         int output_flag;//是否外部输出 0:不输出 1:输出
-        int output_hold;//外部输出持续时间10-300s
+        int output_hold;//外部输出持续时间1-300s
         int effect_day_num;//时间数组数量
         SGP_EFFECT_DAY effect_day[7];//时间数组
 };
@@ -405,7 +401,7 @@ struct SGP_ALARM_INPUT_INFO
         int light_flag;//是否开启闪光灯 0:否; 1:是
         int light_hold;//闪光灯持续时间，10-300s
         int output_flag;//是否外部输出 0:不输出 1:输出
-        int output_hold;//外部输出持续时间10-300s
+        int output_hold;//外部输出持续时间1-300s
         int audio_flag;//是否音乐提醒 1:是; 0:否
         int audio_index;//音乐文件索引，0-2
         int audio_mode;//音乐播放模式 1:播放次数; 2:持续时间
@@ -465,7 +461,7 @@ struct SGP_NET_EXCEPTION_INFO
         int light_flag;//是否闪光灯 0:否; 1:是
         int light_hold;//闪光灯持续时间10-300s
         int output_flag;//是否外部输出 0:不输出 1:输出
-        int output_hold;//外部输出持续时间10-300s
+        int output_hold;//外部输出持续时间1-300s
 		int interval_time;// 报警间隔时间，单位：秒。允许设置的间隔时长为：30， 60, 300， 600，900,1800， 3600
 };
 
@@ -475,7 +471,7 @@ struct SGP_ACCESS_VIOLATION_INFO
         int audio_index;//音频文件索引0-2
         int audio_mode;//音频模式 0:持续时间; 1:播放次数
         int audio_value;//音频模式值 0-100（次/秒）
-        int allow_cout;//允许登录次数3-10次
+        int allow_count;//允许登录次数3-10次
         int flag;//是否开启 0:不开启; 1:开启
         int sendmail;//是否发送邮件 0:否; 1:是
         int light_flag;//是否闪光灯 0:否; 1:是
@@ -494,7 +490,7 @@ struct SGP_EMAIL_INFO
         int encry_type;//加密方式 0:none; 1:tls; 2:ssl
         char from[STRING_LENGH];//发件人
         int health;//是否使用健康邮件 0:否; 1:是
-        int health_value;//健康邮件间隔 1-360天
+        int health_value;//健康邮件间隔 1-3600s
         int is_anon;//是否匿名 0:否; 1:是
         char password[STRING_LENGH];//登录密码，密文传输
         int smtp_port;//smtp服务端口，默认25
@@ -538,8 +534,6 @@ struct SGP_TEMPALARMNOTIFY
         float high_temp;//高温温度,高温报警时有效
         float low_temp;//低温温度,低温报警时有效
         float avg_temp;//平均温度,平均温报警时有效
-		float rate_temp;//温升温度,温升报警时有效
-		float diff_temp;//温差温度,温差报警时有效		
         int temp_flag;//报警类型，0代表平均温，1代表高温报警，2代表低温报警，3代表高低温报警(web2.0 不支持)
 					  //5温升报警 6温差报警(web2.0增加)
         int type;//1:温度报警; 2:热点报警; 3:冷点报警(web2.0 不支持)
@@ -765,32 +759,6 @@ struct SGP_PTZ_CONTROL_INFO
 						变倍或者变焦动作可以通过此参数来区分通道来操作*/
 	int ptz_param3;		/*扩展参数用，默认参数为0*/
 };
-
-struct SGP_HISTORY_REQUEST_INFO
-{
-	int datatype;			//数据类型 1 视频 2 图片
-	int videotype;			//视频类型1可见光 2 红外
-	char starttime[32];		//开始时间 格式：2020-05-21 12:22:33
-	char endtime[32];		//结束时间 格式：2020-05-21 12:22:33
-	int pageindex;			//当前页 取值范围 >=1
-	int pagecount;			//单页数
-};
-
-struct SGP_HISTORY_RESPONSE_INFO
-{
-	int type;		//文件类型: 1报警 2冷点 3热点 4冷热点同时 5手动 6事件 7报警输入
-	char url[256];	//文件地址
-	char start[32];	//开始时间
-	char end[32];	//结束时间
-	int filesize;	//文件大小,单位:Byte
-};
-
-struct SGP_HISTORY_RESPONSE_INFOS
-{
-	int total;//总数
-	SGP_HISTORY_RESPONSE_INFO info[HISTORY_INFO_MAX_NUM];
-};
-
 
 /**
 * @brief        温度告警回调函数

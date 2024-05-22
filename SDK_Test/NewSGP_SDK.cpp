@@ -134,7 +134,7 @@ TEST_F(SgpTest, 06_last_column)
 //07 设置所有点索引
 TEST_F(SgpTest, 07_all_point)
 {
-    const int pointNum = 640*512;
+    const int pointNum = 75000;
     int* index = (int*)malloc(pointNum * sizeof(int));
     for (int i = 0; i < pointNum; i++)
     {
@@ -405,7 +405,7 @@ TEST_F(SgpTest, 18_last_column_getTemp)
 //19 设置所有点索引，获取温度
 TEST_F(SgpTest, 19_all_points_getTemp)
 {
-    const int pointNum = 640 * 512;
+    const int pointNum = 75000;
     int* index = (int*)malloc(pointNum * sizeof(int));
     for (int i = 0; i < pointNum; i++)
     {

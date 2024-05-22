@@ -385,8 +385,8 @@ void StressTest(SGP_HANDLE handle, int n) {
 int gloableX = 320;        //十字光标初始横坐标
 int gloableY = 256;        //十字光标初始纵坐标
 #define PRECISION 2        //温度的小数点位数
-#define WIDTH 640          //图像数据宽
-#define HEIGHT 512         //图像数据高
+#define WIDTH 512          //图像数据宽
+#define HEIGHT 640         //图像数据高
 //鼠标回调
 static void onMouse(int event, int x, int y, int flags, void* userdata) {
     if (event == EVENT_MOUSEMOVE) {

@@ -39,7 +39,8 @@ static void NetworkError(SGP_NETWORKERRORNOTIFY notify, void* pUser)
 static void GetTempNotify(SGP_TEMPALARMNOTIFY notify, void* pUser)
 {
     cout << "时间：" << notify.time << "  最高温：" << notify.high_temp <<
-        "  平均温：" << notify.avg_temp << "  最低温：" << notify.low_temp << endl;
+        "  最低温：" << notify.low_temp << "  平均温：" << notify.avg_temp <<
+        "  温升：" << notify.rate_temp <<"  温差："<<notify.diff_temp<< endl;
     cout << "报警截图地址：" << notify.ir_image_url << endl;
     cout << "报警视频地址：" << notify.ir_video_url << endl;
     cout << "名称：" << notify.name << endl;
@@ -55,15 +56,27 @@ static void GetTempNotify(SGP_TEMPALARMNOTIFY notify, void* pUser)
     cout << notify.name << endl;
     cout << endl;
    
-    cout << notify.config.type << endl;
-    cout << notify.config.condition << endl;
-    cout << notify.config.high_temp << endl;
-    cout << notify.config.low_temp << endl;
-    cout << notify.config.avg_temp << endl;
-    cout << notify.config.objtype << endl;
+    if (notify.config.type == 1) { cout << "高温报警" << endl; }
+    if (notify.config.type == 2) { cout << "低温报警" << endl; }
+    if (notify.config.type == 3) { cout << "平均温报警" << endl; }
+    if (notify.config.type == 4) { cout << "高低温报警" << endl; }
+    if (notify.config.condition == 1) { cout << "报警条件：高于" << endl; }
+    if (notify.config.condition == 2) { cout << "报警条件：低于" << endl; }
+    if (notify.config.condition == 3) { cout << "报警条件：匹配" << endl; }
+    
+    cout << "高温阈值：" << notify.config.high_temp << endl;
+    cout << "低温阈值：" << notify.config.low_temp << endl;
+    cout << "平均温阈值：" << notify.config.avg_temp << endl;
+
+    if (notify.config.objtype == 1) { cout << "点" << endl; }
+    if (notify.config.objtype == 2) { cout << "线" << endl; }
+    if (notify.config.objtype == 3) { cout << "矩形" << endl; }
+    if (notify.config.objtype == 4) { cout << "多边形" << endl; }
+    if (notify.config.objtype == 5) { cout << "圆" << endl; }
+
     for (int i = 0; i < sizeof(notify.config.points) / sizeof(notify.config.points[0]); i++) {
-        cout << notify.config.points[i].x << endl;
-        cout << notify.config.points[i].y << endl;
+        cout << "第" << i + 1 << "个点的横坐标：" << notify.config.points[i].x << endl;
+        cout << "第" << i + 1 << "个点的纵坐标：" << notify.config.points[i].y << endl;
     }
 }
 static void GetFocusResult(int result, void* pUser)
@@ -85,7 +98,7 @@ int main()
         cout << "初始化失败" << endl;
     }*/
 
-    const char* server = "192.168.21.143";
+    const char* server = "192.168.21.244";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;

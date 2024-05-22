@@ -225,7 +225,7 @@
 
 
 获取热图
-        const char* path = "./testPicture/screenpic.jpg";
+        const char* path = "./testPicture/heatMap.jpg";
         int ret = SGP_GetHeatMap(handle, path);
         if (ret == SGP_OK)
         {
@@ -262,7 +262,7 @@
 
 
 获取高压热图
-        const char* path = "./testPicture/screenpic.fir";
+        const char* path = "./testPicture/firHeatMap.fir";
         int ret = SGP_GetFirHeatMap(handle, path);
         if (ret == SGP_OK)
         {
@@ -1026,7 +1026,7 @@ static void GetRecordStatus(int state, void* pUser)
             for (int i = 0; i < 7; i++)
             {
                 info.effect_day[i].day = i + 1;
-                info.effect_day[i].period_num = 7;
+                info.effect_day[i].period_num = 1;
                 strcpy(info.effect_day[i].period->start, "12:00:00");
                 strcpy(info.effect_day[i].period->end, "22:59:59");
             }
@@ -1098,6 +1098,7 @@ static void GetRecordStatus(int state, void* pUser)
             cout << "flag=" << info.flag << endl;
             cout << "output_flag=" << info.output_flag << endl;
             cout << "output_hold=" << info.output_hold << endl;
+            cout << "interval_time=" << info.interval_time << endl;
         }
         else
         {

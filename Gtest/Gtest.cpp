@@ -234,8 +234,8 @@ int main()
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
     const char* server = "192.168.21.31";
-    const char* username = "user";
-    const char* password = "user123";
+    const char* username = "root";
+    const char* password = "guide123";
     int port = 80;
     int ret1 = SGP_Login(handle, server, username, password, port);
     if (ret1 == SGP_OK)
@@ -249,8 +249,22 @@ int main()
         //getHeatMap(handle);
         
 
-        
-        
+        //StressTest(handle, 24);
+
+       
+        SGP_NET_INFO info;
+        memset(&info, 0x00, sizeof(info));
+        int ret = SGP_GetNetInfo(handle, &info);
+        if (ret == SGP_OK)
+        {
+            cout << "获取网络信息成功，获取信息如下：" << endl;
+            cout << "获取的主机名为：" << info.host_name << endl;
+            cout << "获取ip地址为：" << info.ipaddr << endl;
+        }
+        else
+        {
+            cout << "获取网络信息失败\n" << "ret的返回值为：" << ret << endl;
+        }
         
 
 
