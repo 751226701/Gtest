@@ -368,7 +368,7 @@ SGP_API int SGP_DoShutter(SGP_HANDLE handle, SGP_SHUTTER_ENUM type);
 * @param
 * handle        输入参数，传入设备对象
 * output        输出参数，输出温度矩阵
-* length		输入参数，output大小(要确保输出温度矩阵的长度和length的大小一致）
+* length		输入参数，output大小(要确保输出温度矩阵的长度和length的大小一致），范围1-75000
 * type          输入参数，返回的温度矩阵大小：0为推流红外分辨率，1为设备红外原始分辨率
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
@@ -380,7 +380,7 @@ SGP_API int SGP_GetImageTemps(SGP_HANDLE handle, float *output, int length, int 
 * @param
 * handle        输入参数，传入设备对象
 * index	    输入参数，传入测温点索引数组
-* length	    输入参数，测温点索引数组长度(要确保测温点索引数组的长度和length的大小一致）
+* length	    输入参数，测温点索引数组长度(要确保测温点索引数组的长度和length的大小一致），范围1-75000
 * type          输入参数，返回的温度矩阵大小：0为推流红外分辨率，1为设备红外原始分辨率
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
@@ -392,7 +392,7 @@ SGP_API int SGP_SetTempPoints(SGP_HANDLE handle, int *index, int length, int typ
 * @param
 * handle        输入参数，传入设备对象
 * output        输出参数，输出测温点数组对应的温度值数组
-* length		输入参数，测温点索引数组长度
+* length		输入参数，测温点索引数组长度，范围1-75000
 * type          输入参数，返回的温度矩阵大小：0为推流红外分辨率，1为设备红外原始分辨率
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
@@ -404,7 +404,7 @@ SGP_API int SGP_GetTempPoints(SGP_HANDLE handle, float *output, int length, int 
 * @param
 * handle        输入参数，传入设备对象
 * output        输出参数，输出测温点数组对应的温度值数组
-* length		输入参数，测温点索引数组长度(要确保测温点数组对应的温度值数组的长度和length的大小一致）
+* length		输入参数，测温点索引数组长度(要确保测温点数组对应的温度值数组的长度和length的大小一致），范围1-75000
 * input         输入参数，指定的矩形区域
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
@@ -465,7 +465,7 @@ SGP_API int SGP_SetColorBarShow(SGP_HANDLE handle, int input);
 * @brief        设置温度显示类型
 * @param
 * handle        输入参数，传入设备对象
-* input         输入参数，温度显示方式：1 最高温 2 最低温 3 平均温 4 最高温 + 最低温 5 最高温 + 平均温 6 平均温 + 最低温 7 最高温 + 最低温 + 平均温 8不显示
+* input         输入参数，温度显示方式：0 不显示 1 最高温 2 最低温 3 平均温 4 最高温 + 最低温 5 最高温 + 平均温 6 平均温 + 最低温 7 最高温 + 最低温 + 平均温 
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
 */
@@ -499,7 +499,7 @@ SGP_API int SGP_SetStringShow(SGP_HANDLE handle, int type, const char *input);
 * @brief        设置分析对象温度显示类型
 * @param
 * handle        输入参数，传入设备对象
-* input         输入参数，对象温度显示:1最高温;2最低温;3平均温;4仅名称;5不显示
+* input         输入参数，对象温度显示:1最高温;2最低温;3平均温;4仅名称;5不显示;6名称+最高温;7名称+最低温;8名称+平均温(web1.0仅支持1、2、3、4、5)
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
 */
@@ -1191,6 +1191,28 @@ SGP_API int SGP_ControlPtzPatrol(SGP_HANDLE handle, int cruise_index, int cruise
 * @note
 */
 SGP_API int SGP_SetIOOutput(SGP_HANDLE handle, int type, int value);
+
+/**
+* @brief		获取视频Gain
+* @param
+* handle        输入参数，传入设备对象
+* gain			输出参数，视频Gain值
+* @return       成功返回SGP_OK，失败返回错误码
+* @note
+*/
+SGP_API int SGP_GetAvVideoGain(SGP_HANDLE handle, int* gain);
+
+
+/**
+* @brief		获取历史视频/图片信息
+* @param
+* handle        输入参数，传入设备对象
+* input			输入参数，历史视频/图片请求信息
+* output		输出参数，历史视频/图片回复信息
+* @return       成功返回SGP_OK，失败返回错误码
+* @note
+*/
+SGP_API int SGP_GetHistoryInfo(SGP_HANDLE handle, const SGP_HISTORY_REQUEST_INFO &input, SGP_HISTORY_RESPONSE_INFOS &output);
 
 
 SGPSDK_STDC_END

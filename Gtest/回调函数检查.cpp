@@ -53,7 +53,6 @@ static void GetTempNotify(SGP_TEMPALARMNOTIFY notify, void* pUser)
     if (notify.type == 1) { cout << "温度报警！" << endl; }
     if (notify.type == 2) { cout << "热点报警！" << endl; }
     if (notify.type == 3) { cout << "冷点报警！" << endl; }
-    cout << notify.name << endl;
     cout << endl;
    
     if (notify.config.type == 1) { cout << "高温报警" << endl; }
