@@ -62,11 +62,9 @@ static void GetTempNotify(SGP_TEMPALARMNOTIFY notify, void* pUser)
     if (notify.config.condition == 1) { cout << "报警条件：高于" << endl; }
     if (notify.config.condition == 2) { cout << "报警条件：低于" << endl; }
     if (notify.config.condition == 3) { cout << "报警条件：匹配" << endl; }
-    
     cout << "高温阈值：" << notify.config.high_temp << endl;
     cout << "低温阈值：" << notify.config.low_temp << endl;
     cout << "平均温阈值：" << notify.config.avg_temp << endl;
-
     if (notify.config.objtype == 1) { cout << "点" << endl; }
     if (notify.config.objtype == 2) { cout << "线" << endl; }
     if (notify.config.objtype == 3) { cout << "矩形" << endl; }
@@ -97,7 +95,7 @@ int main()
         cout << "初始化失败" << endl;
     }*/
 
-    const char* server = "192.168.21.244";
+    const char* server = "192.168.21.31";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
