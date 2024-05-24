@@ -284,9 +284,9 @@ void getTempMatrix(short* y16) {
     }
 
     //y16ToVideo(y16);
-    matrixToVideo(matrix);
+    //matrixToVideo(matrix);
     //callbackCounts();
-    //getMaxMinTemp(matrix);
+    getMaxMinTemp(matrix);
 
     free(matrix);
     matrix = nullptr;

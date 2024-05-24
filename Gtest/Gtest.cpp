@@ -233,7 +233,7 @@ int main()
     int n;
     cout << "Please enter the interval time(ms): " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.31";
+    const char* server = "192.168.21.244";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -251,20 +251,31 @@ int main()
 
         //StressTest(handle, 24);
 
+        int i = 1;
+        int errCount = 0;
+        while (true)
+        {
+            cout << "第" << i << "次" << endl;
+            
+            SGP_IMAGE_TYPE type = SGP_IR_IMAGE;
+            char path[] = "./testPicture/screencap.jpg";
+            int ret = SGP_GetScreenCapture(handle, type, path);
+            if (ret == SGP_OK)
+            {
+                cout << "获取屏幕截图成功" << endl;
+            }
+            else
+            {
+                cout << "获取屏幕截图失败\n" << "ret的返回值为：" << ret << endl;
+                errCount++;
+            }
+
+            i++;
+            cout << "失败次数：" << errCount << endl;
+            Sleep(3000); cout << endl;
+        }
+
        
-        SGP_NET_INFO info;
-        memset(&info, 0x00, sizeof(info));
-        int ret = SGP_GetNetInfo(handle, &info);
-        if (ret == SGP_OK)
-        {
-            cout << "获取网络信息成功，获取信息如下：" << endl;
-            cout << "获取的主机名为：" << info.host_name << endl;
-            cout << "获取ip地址为：" << info.ipaddr << endl;
-        }
-        else
-        {
-            cout << "获取网络信息失败\n" << "ret的返回值为：" << ret << endl;
-        }
         
 
 

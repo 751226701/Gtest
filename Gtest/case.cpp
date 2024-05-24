@@ -108,10 +108,12 @@
             if (output != NULL)
             {
                 ret = SGP_GetImageTemps(handle, output, length * 4, type);
-                if(ret == SGP_OK)
-                {
-                    cout << "返回成功" << endl;
-                }
+                if (ret != SGP_OK)
+                    {
+                        cout << "获取温度矩阵失败 ret is:" << ret << endl;
+                        return -1;
+                    }
+                cout << "返回成功" << endl;
                 
                 float max=0, min=100,sum=0;
                 for (int i = 0; i < length; i++)

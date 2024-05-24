@@ -96,7 +96,6 @@ public:
 std::ofstream logFile("C:\\Users\\gd09186\\Desktop\\test.log", std::ios::app);  // 打开文件时使用追加模式
 CoutTeeBuffer teeBuffer(std::cout.rdbuf(), logFile.rdbuf());
 std::ostream tee(&teeBuffer);
-
 class Logger {
 public:
     // 构造函数，设置日志文件路径
@@ -332,45 +331,53 @@ void StressTest(SGP_HANDLE handle, int n) {
         SGP_GENERAL_INFO info;
         memset(&info, 0x00, sizeof(info));
         int rett = SGP_GetGeneralInfo(handle, &info);
-        if (rett == SGP_OK)
+        if (rett != SGP_OK)
+        {
+            cout << "获取通用信息失败，ret is:" << rett << endl;
+            errCount += 1;
+        }
+        else 
         {
             int height = info.ir_model_h;
             int width = info.ir_model_w;
             int length = height * width;
-            int type = 1;
+            int type1 = 1;
             float* output = (float*)calloc(length, sizeof(float));
             if (output != NULL)
             {
-                rett = SGP_GetImageTemps(handle, output, length * 4, type);
+                rett = SGP_GetImageTemps(handle, output, length * 4, type1);
                 if (rett == SGP_OK)
                 {
                     tee << "获取温度矩阵成功" << endl;
+                    float max = 0, min = 100, sum = 0;
+                    for (int i = 0; i < length; i++)
+                    {
+                        if (max < output[i])
+                        {
+                            max = output[i];
+                        }
+                        if (min > output[i])
+                        {
+                            min = output[i];
+                        }
+                        sum += output[i];
+                    }
+
+                    tee << "获取的最高温为：" << setprecision(3) << max << endl;
+                    tee << "获取的最低温为：" << setprecision(3) << min << endl;
+                    tee << "获取的平均温为：" << setprecision(3) << sum / length << endl;
                 }
                 else
                 {
                     tee << "获取温度矩阵失败" << "rett=" << rett << endl;
                     errCount += 1;
+                    free(output);
+                    output = NULL;
                 }
-                float max = 0, min = 100, sum = 0;
-                for (int i = 0; i < length; i++)
-                {
-                    if (max < output[i])
-                    {
-                        max = output[i];
-                    }
-                    if (min > output[i])
-                    {
-                        min = output[i];
-                    }
-                    sum += output[i];
-                }
-
-                tee << "获取的最高温为：" << setprecision(3) << max << endl;
-                tee << "获取的最低温为：" << setprecision(3) << min << endl;
-                tee << "获取的平均温为：" << setprecision(3) << sum / length << endl;
             }
             free(output);
             output = NULL;
+        
         }
 
         tee << endl;

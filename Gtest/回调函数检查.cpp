@@ -81,7 +81,6 @@ static void GetFocusResult(int result, void* pUser)
     printf("Focus result is %d\n", result);
 }
 
-
 int main()
 {
     SGP_HANDLE handle = 0;
@@ -104,6 +103,18 @@ int main()
     if (ret1 == SGP_OK)
     {
         cout << "登陆成功！" << endl;
+        SGP_VERSION_INFO info1;
+        memset(&info1, 0x00, sizeof(info1));
+        SGP_GetVersionInfo(handle, &info1);
+        cout << "获取的系统信息为：" << endl;
+        cout << "设备型号：" << info1.model << endl;
+        cout << "系统版本：" << info1.version << endl;
+        cout << "序列号：  " << info1.serial << endl;
+        cout << "FPGA版本：" << info1.fpga_version << endl;
+        cout << "测温版本：" << info1.measure_version << endl;
+        cout << "SDK版本： " << info1.sdk_version << endl;
+        cout << "****************************************" << endl;
+        cout << endl;
 
         //视频回调
         //for (int i = 1; i <= 1; i++)
