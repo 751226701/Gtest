@@ -522,8 +522,8 @@ int main()
 	for (int i = 1; i <= nums; i++)   //热图解析
 	{
 		cout << "第" << i << "次的分析结果为" << endl;
-		heatmap = "D:/Testpicture/heatmap_" + std::to_string(i) + ".jpg";
-		//heatmap = "D:/Test/ZU08D_firmap/firmap/202211241335021132862.jpg";
+		//heatmap = "D:/Testpicture/heatmap_" + std::to_string(i) + ".jpg";
+		heatmap = "C:\\Users\\gd09186\\Desktop\\IR_Common_20240529_103404680(1).jpg";
 		GetGWTempEx(heatmap, max, min, avg);
 		if (max < 100 && min >0)
 		{

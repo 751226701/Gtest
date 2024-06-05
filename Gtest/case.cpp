@@ -1141,6 +1141,7 @@ static void GetRecordStatus(int state, void* pUser)
             cout << "output_flag=" << info.output_flag << endl;
             cout << "output_hold=" << info.output_hold << endl;
             cout << "sendmail=" << info.sendmail << endl;
+            cout << "locktime" << info.lock_time << endl;
         }
         else
         {

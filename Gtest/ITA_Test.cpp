@@ -146,24 +146,34 @@ void ConvertShortToUnsignedChar1(const short* srcData, unsigned char* dstData, i
 int main()
 {
 	
+	
+	
+
+
+	int width = 384;
+	int height = 288;
 	ITA_RESULT result;
 	HANDLE_T instance = ITA_HeatmapInit();
+	char file[] = "D:\\Google_download\\IR_Common_20240529_113656384.jpg";
+	ITA_HEATMAP_TYPE heatMapType = ITA_DLT;
+	ITA_TEMPMATRIX_INFO dltMatrixInfo;
+	dltMatrixInfo.tempMatrix = new float[width * height];
 
-	ITA_PALETTE_TYPE Index = ITA_BLUE_HOT;
-	const int len = 1024;
-	unsigned char* colorStripData = new unsigned char[len];
-	result = ITA_GetColorStripData(instance, Index, colorStripData, len);
+	result = ITA_GetTempMatrixInfo(instance, file, heatMapType, &dltMatrixInfo);
 	if (result == ITA_OK)
 	{
-		cout << "获取色带条数据成功！" << endl;
-		saveColorStripData("蓝热.raw", colorStripData, len);
+		cout << "获取成功！" << endl;
+		saveTempMatrix(&dltMatrixInfo);
+		getTempMatrixMaxMinTemp(&dltMatrixInfo);
 	}
 	else
 	{
-		cout << "获取色带条数据失败！result is：" << result << endl;
+		cout << "获取失败,result is:" << result << endl;
 	}
 
 	
+
+
 
 	ITA_HeatmapUninit(instance);
 	system("pause");

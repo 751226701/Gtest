@@ -192,7 +192,7 @@ void adjustBrightnessContrast(Mat& image, double brightness, int contrast) {
 }
 //温度矩阵成像
 void matrixToVideo(float* matrix) {
-    cout << "position: (" << gloableX <<"," << gloableY << ")  temp:" 
+    cout << "position: [" << gloableX <<"," << gloableY << "]  temp:" 
         << fixed << setprecision(PRECISION) << matrix[gloableY * WIDTH + gloableX] << endl;
     //将温度矩阵转化为CV_32F数据类型存储
     Mat temperatureImage(HEIGHT, WIDTH, CV_32F, matrix);
@@ -222,7 +222,7 @@ void matrixToVideo(float* matrix) {
 }
 //Y16矩阵成像
 void y16ToVideo(short* y16) {
-    cout << "position: (" << gloableX << "," << gloableY << ")  Y16:"<< y16[gloableY * WIDTH + gloableX] << endl;
+    cout << "position: [" << gloableX << "," << gloableY << "]  Y16:"<< y16[gloableY * WIDTH + gloableX] << endl;
     Mat temperatureImage(HEIGHT, WIDTH, CV_16S, y16);
     normalize(temperatureImage, temperatureImage, 0, 255, NORM_MINMAX);
     Mat temperature8U;
@@ -284,9 +284,9 @@ void getTempMatrix(short* y16) {
     }
 
     //y16ToVideo(y16);
-    //matrixToVideo(matrix);
+    matrixToVideo(matrix);
     //callbackCounts();
-    getMaxMinTemp(matrix);
+    //getMaxMinTemp(matrix);
 
     free(matrix);
     matrix = nullptr;
@@ -334,7 +334,7 @@ int main()
     tee << endl;
     tee << "Please enter the testing time:";
     cin >> n;*/
-    const char* server = "192.168.21.31";
+    const char* server = "192.168.21.244";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;

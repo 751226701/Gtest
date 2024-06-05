@@ -475,7 +475,7 @@ struct SGP_ACCESS_VIOLATION_INFO
         int audio_index;//音频文件索引0-2
         int audio_mode;//音频模式 0:持续时间; 1:播放次数
         int audio_value;//音频模式值 0-100（次/秒）
-        int allow_cout;//允许登录次数3-10次
+        int allow_count;//允许登录次数3-10次
         int flag;//是否开启 0:不开启; 1:开启
         int sendmail;//是否发送邮件 0:否; 1:是
         int light_flag;//是否闪光灯 0:否; 1:是

@@ -368,7 +368,7 @@ SGP_API int SGP_DoShutter(SGP_HANDLE handle, SGP_SHUTTER_ENUM type);
 * @param
 * handle        输入参数，传入设备对象
 * output        输出参数，输出温度矩阵
-* length		输入参数，output大小(要确保输出温度矩阵的长度和length的大小一致），范围1-75000
+* length		输入参数，output大小(要确保输出温度矩阵的长度和length的大小一致）
 * type          输入参数，返回的温度矩阵大小：0为推流红外分辨率，1为设备红外原始分辨率
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
@@ -380,7 +380,7 @@ SGP_API int SGP_GetImageTemps(SGP_HANDLE handle, float *output, int length, int 
 * @param
 * handle        输入参数，传入设备对象
 * index	    输入参数，传入测温点索引数组
-* length	    输入参数，测温点索引数组长度(要确保测温点索引数组的长度和length的大小一致），范围1-75000
+* length	    输入参数，测温点索引数组长度(要确保测温点索引数组的长度和length的大小一致）
 * type          输入参数，返回的温度矩阵大小：0为推流红外分辨率，1为设备红外原始分辨率
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
@@ -392,7 +392,7 @@ SGP_API int SGP_SetTempPoints(SGP_HANDLE handle, int *index, int length, int typ
 * @param
 * handle        输入参数，传入设备对象
 * output        输出参数，输出测温点数组对应的温度值数组
-* length		输入参数，测温点索引数组长度，范围1-75000
+* length		输入参数，测温点索引数组长度
 * type          输入参数，返回的温度矩阵大小：0为推流红外分辨率，1为设备红外原始分辨率
 * @return       成功返回SGP_OK，失败返回错误码
 * @note
@@ -404,7 +404,7 @@ SGP_API int SGP_GetTempPoints(SGP_HANDLE handle, float *output, int length, int 
 * @param
 * handle        输入参数，传入设备对象
 * output        输出参数，输出测温点数组对应的温度值数组
-* length		输入参数，测温点索引数组长度(要确保测温点数组对应的温度值数组的长度和length的大小一致），范围1-75000
+* length		输入参数，测温点索引数组长度(要确保测温点数组对应的温度值数组的长度和length的大小一致）
 * input         输入参数，指定的矩形区域
 * @return       成功返回SGP_OK，失败返回错误码
 * @note

@@ -221,17 +221,38 @@ void saveMatrix2(float *output, char filename[]) {
     }
 }
 
+static int callbackCount = 0;
+static auto lastSecond = chrono::system_clock::now();
+void callbackCounts()
+{
+    callbackCount++;
+    //cout << "callbackCount:" << callbackCount << endl;
+    auto now = chrono::system_clock::now();
+    auto currentSecond = chrono::duration_cast<chrono::seconds>(now.time_since_epoch()).count();
+    auto lastSecondCount = chrono::duration_cast<chrono::seconds>(lastSecond.time_since_epoch()).count();
+    if (currentSecond != lastSecondCount)
+    {
+        tee << getTime() << "  " << "CallbacksPerSecond: " << callbackCount << endl;
+        callbackCount = 0;
+        lastSecond = now;
+    }
+    if (currentSecond - lastSecondCount > 1)
+    {
+        tee << "回调缺失：" << currentSecond - lastSecondCount - 1 << "秒" << endl;
+    }
+}
+
 int main()
 {
     std::ostream& log = initTee("C:\\Users\\gd09186\\Desktop\\test.log");
     SGP_HANDLE handle = 0;
     handle = SGP_InitDevice(); 
     
-    /*char server[16];
+   /* char server[16];
     cout << "Please enter the device IP: " << endl;
     scanf("%s", server);
     int n;
-    cout << "Please enter the interval time(ms): " << endl;
+    cout << "Please enter the interval time: " << endl;
     cin>>n;*/
     const char* server = "192.168.21.244";
     const char* username = "root";
@@ -243,39 +264,29 @@ int main()
         cout << "登录成功" << endl;
         GetVersionInfo(handle);
         
-        /*const char* filename = "C:\\Users\\gd09186\\Desktop\\matrix.raw";
-        readMatrixToImage(filename);*/
-        //matrixToImage(handle);
-        //getHeatMap(handle);
+        //const char* filename = "D:\\APP\\VS2022\\project\\Gtest\\Gtest\\testPicture\\firHeatMap.fir";
+        //readMatrixToImage(filename);
+        ////matrixToImage(handle);
         
-
-        //StressTest(handle, 24);
-
-        int i = 1;
-        int errCount = 0;
-        while (true)
+        SGP_MEASURE_TEMP_INFO output;
+        int ret = SGP_GetMeasureTempInfo(handle, output);
+        if (ret == SGP_OK)
         {
-            cout << "第" << i << "次" << endl;
-            
-            SGP_IMAGE_TYPE type = SGP_IR_IMAGE;
-            char path[] = "./testPicture/screencap.jpg";
-            int ret = SGP_GetScreenCapture(handle, type, path);
-            if (ret == SGP_OK)
-            {
-                cout << "获取屏幕截图成功" << endl;
-            }
-            else
-            {
-                cout << "获取屏幕截图失败\n" << "ret的返回值为：" << ret << endl;
-                errCount++;
-            }
-
-            i++;
-            cout << "失败次数：" << errCount << endl;
-            Sleep(3000); cout << endl;
+            cout << "获取成功！" << endl;
+            cout << "实时快门温：" << output.realshuttertemp << endl;
+            cout << "上次快门温：" << output.lastshuttertemp << endl;
+            cout << "实时镜筒温：" << output.realmirrortemp << endl;
         }
-
+        else
+        {
+            cout << "获取失败！ret is:" << ret << endl;
+        }
+        
+        
+        
        
+        
+        
         
 
 
