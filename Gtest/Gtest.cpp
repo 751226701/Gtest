@@ -254,7 +254,7 @@ int main()
     int n;
     cout << "Please enter the interval time: " << endl;
     cin>>n;*/
-    const char* server = "192.168.21.244";
+    const char* server = "192.168.21.160";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -264,23 +264,12 @@ int main()
         cout << "登录成功" << endl;
         GetVersionInfo(handle);
         
-        //const char* filename = "D:\\APP\\VS2022\\project\\Gtest\\Gtest\\testPicture\\firHeatMap.fir";
+        //const char* filename = "D:\\Google_download\\y16.raw";
+        //readY16ToImage(filename);
         //readMatrixToImage(filename);
-        ////matrixToImage(handle);
+        //matrixToImage(handle);
         
-        SGP_MEASURE_TEMP_INFO output;
-        int ret = SGP_GetMeasureTempInfo(handle, output);
-        if (ret == SGP_OK)
-        {
-            cout << "获取成功！" << endl;
-            cout << "实时快门温：" << output.realshuttertemp << endl;
-            cout << "上次快门温：" << output.lastshuttertemp << endl;
-            cout << "实时镜筒温：" << output.realmirrortemp << endl;
-        }
-        else
-        {
-            cout << "获取失败！ret is:" << ret << endl;
-        }
+       
         
         
         

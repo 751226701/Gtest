@@ -198,6 +198,9 @@ void matrixToVideo(float* matrix) {
     Mat temperatureImage(HEIGHT, WIDTH, CV_32F, matrix);
     //数据归一，将温度映射到0-1范围内,转为灰度图
     normalize(temperatureImage, temperatureImage, 0, 1, NORM_MINMAX);
+    //使用高斯模糊进行降噪
+    Mat blurredImage;
+    GaussianBlur(temperatureImage, blurredImage, Size(5, 5), 0, 0);
     //将CV_32F数据转化为8位图像数据
     Mat normalized8U;
     temperatureImage.convertTo(normalized8U, CV_8U, 255.0);
@@ -210,6 +213,10 @@ void matrixToVideo(float* matrix) {
         double brightness = 1;  //亮度范围0-3
         int contrast = 50;  //对比度范围-100-100
         adjustBrightnessContrast(coloredImage, brightness, contrast);
+
+        //使用拉普拉斯滤波器进行边缘增强
+        Mat laplacianImage;
+        Laplacian(coloredImage, laplacianImage, CV_8U);
 
         //显示图像
         imshow("matrix_Video", coloredImage);
@@ -225,6 +232,11 @@ void y16ToVideo(short* y16) {
     cout << "position: [" << gloableX << "," << gloableY << "]  Y16:"<< y16[gloableY * WIDTH + gloableX] << endl;
     Mat temperatureImage(HEIGHT, WIDTH, CV_16S, y16);
     normalize(temperatureImage, temperatureImage, 0, 255, NORM_MINMAX);
+
+    //使用高斯模糊进行降噪
+    Mat blurredImage;
+    GaussianBlur(temperatureImage, blurredImage, Size(5, 5), 0, 0);
+
     Mat temperature8U;
     temperatureImage.convertTo(temperature8U, CV_8U);
 
@@ -235,6 +247,10 @@ void y16ToVideo(short* y16) {
         double brightness = 1;  // 亮度范围0-3
         int contrast = 50;      // 对比度范围-100-100
         adjustBrightnessContrast(coloredImage, brightness, contrast);
+
+        //使用拉普拉斯滤波器进行边缘增强
+        Mat laplacianImage;
+        Laplacian(coloredImage, laplacianImage, CV_8U);
 
         imshow("Y16_Video", coloredImage);
         setMouseCallback("Y16_Video", onMouse, (void*)&temperatureImage);
@@ -334,7 +350,7 @@ int main()
     tee << endl;
     tee << "Please enter the testing time:";
     cin >> n;*/
-    const char* server = "192.168.21.244";
+    const char* server = "192.168.21.160";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;

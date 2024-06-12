@@ -94,7 +94,7 @@ int main()
         cout << "初始化失败" << endl;
     }*/
 
-    const char* server = "192.168.21.244";
+    const char* server = "192.168.21.160";
     const char* username = "root";
     const char* password = "guide123";
     int port = 80;
@@ -117,19 +117,19 @@ int main()
         cout << endl;
 
         //视频回调
-        //for (int i = 1; i <= 1; i++)
-        //{
-        //    int result = SGP_OpenIrVideo(handle, GetIrRtsp, 0);
-        //    printf("第%d次SGP_OpenIrVideo接口返回值是%d\n", i, result);
-        //    Sleep(5000);
-        //    std::string IRFile = "1234.mp4";
-        //    int startResult = SGP_StartRecord(handle, SGP_IR_VIDEO, IRFile.c_str(), GetRecordStatus, 0);
-        //    printf("SGP_StartRecord接口红外返回值是%d\n", startResult);
-        //    Sleep(30000);
-        //    SGP_StopRecord(handle, SGP_IR_VIDEO);
-        //    //关闭视频流
-        //    SGP_CloseIrVideo(handle);
-        //}
+        for (int i = 1; i <= 1; i++)
+        {
+            int result = SGP_OpenIrVideo(handle, GetIrRtsp, 0);
+            printf("第%d次SGP_OpenIrVideo接口返回值是%d\n", i, result);
+            Sleep(5000);
+            std::string IRFile = "1234.mp4";
+            int startResult = SGP_StartRecord(handle, SGP_IR_VIDEO, IRFile.c_str(), GetRecordStatus, 0);
+            printf("SGP_StartRecord接口红外返回值是%d\n", startResult);
+            Sleep(30000);
+            SGP_StopRecord(handle, SGP_IR_VIDEO);
+            //关闭视频流
+            SGP_CloseIrVideo(handle);
+        }
 
         //非法访问回调
         SGP_RegisterAccessViolationCallback(handle, GetAccessNotify, 0);
